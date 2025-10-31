@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.forms.widgets import EmailInput
 # from sceneid.forms import UserCreationForm as BaseUserCreationForm
 
-from homepage.models import Profile
+from homepage.models import Profile, BlacklistedDomain
 from homepage.fields import BlacklistProtectedEmailField
 
 class LoginForm(AuthenticationForm):
@@ -52,7 +52,53 @@ class CsvUploadForm(forms.Form):
 class UpdateProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ("blurb",)
+        fields = ("website", "blurb",)
+
+class AccountSettingsForm(forms.ModelForm):
+    email = forms.EmailField(required=True, label="Account email")
+
+    class Meta:
+        model = Profile
+        fields = ("email", "enable_notifications", "enable_shoutwall", "enable_shoutwall_notifications")
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+
+        # Prepopulate the email field from the user model
+        if self.user:
+            self.fields["email"].initial = self.user.email
+    
+    def clean_email(self):
+        email = self.cleaned_data.get("email", "").strip().lower()
+
+        # Must not be blank
+        if not email:
+            raise forms.ValidationError("Email address cannot be blank.")
+
+        # Must be unique among users (excluding current user)
+        if User.objects.exclude(pk=self.user.pk).filter(email__iexact=email).exists():
+            raise forms.ValidationError("This email address is already in use.")
+
+        # Must not be from a blacklisted domain
+        domain = email.split("@")[-1]
+        if BlacklistedDomain.objects.filter(domain__iexact=domain).exists():
+            raise forms.ValidationError("Email addresses from this domain are not allowed.")
+
+        return email
+
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        if commit:
+            profile.save()
+
+        # Update user email if changed
+        email = self.cleaned_data.get("email")
+        if self.user and email and self.user.email != email:
+            self.user.email = email
+            self.user.save(update_fields=["email"])
+
+        return profile
 
 # class SceneIDUserCreationForm(BaseUserCreationForm):
 #     username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True, 'class': 'form-control', 'placeholder': 'Username'}))

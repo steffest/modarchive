@@ -157,7 +157,7 @@ class RegistrationTests(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertTemplateUsed('templates/registration/register.html')
 
-    @patch("homepage.view.registration_views.is_recaptcha_success")
+    @patch("homepage.views.registration_views.is_recaptcha_success")
     def test_sends_registration_email_with_completed_form(self, mock_recaptcha):
         # Act
         mock_recaptcha.return_value = True
@@ -172,7 +172,7 @@ class RegistrationTests(TestCase):
         self.assertTrue("Thank you for registering an account with the Mod Archive. To complete your registration, please follow this link:" in mail.outbox[0].body)
         self.assertTrue("https://testserver/activate_account" in mail.outbox[0].body)
 
-    @patch("homepage.view.registration_views.is_recaptcha_success")
+    @patch("homepage.views.registration_views.is_recaptcha_success")
     def test_notifies_existing_user_if_email_address_already_in_use(self, mock_recaptcha):
         # Arrange
         mock_recaptcha.return_value = True
@@ -189,7 +189,7 @@ class RegistrationTests(TestCase):
         self.assertEqual("ModArchive security warning", mail.outbox[0].subject)
         self.assertTrue("A user attempted to register a ModArchive account with your email address." in mail.outbox[0].body)
 
-    @patch("homepage.view.registration_views.is_recaptcha_success")
+    @patch("homepage.views.registration_views.is_recaptcha_success")
     def test_redirects_to_register_fail_if_recaptcha_fails(self, mock_recaptcha):
         # Arrange
         mock_recaptcha.return_value = False
@@ -200,7 +200,7 @@ class RegistrationTests(TestCase):
         # Assert
         self.assertRedirects(response, reverse('register_fail'))
 
-    @patch("homepage.view.registration_views.is_recaptcha_success")
+    @patch("homepage.views.registration_views.is_recaptcha_success")
     def test_registration_creates_user_but_not_profile(self, mock_recaptcha):
         # Act
         mock_recaptcha.return_value = True
@@ -395,11 +395,142 @@ class UpdateProfileViewTests(TestCase):
         self.client.force_login(user)
 
         # Act
-        self.client.post(reverse('update_profile'), {'blurb': 'new blurb'})
+        self.client.post(reverse('update_profile'), {'blurb': 'new blurb', 'website': 'https://modarchive.org'})
 
         # Assert
         user.profile.refresh_from_db()
         self.assertEqual('new blurb', user.profile.blurb)
+        self.assertEqual('https://modarchive.org', user.profile.website)
+    
+    def test_post_update_profile_fails_when_website_is_not_url(self):
+        # Arrange
+        user = factories.UserFactory()
+        self.client.force_login(user)
+
+        # Act
+        response = self.client.post(reverse('update_profile'), {'website': 'not a URL'})
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('Enter a valid URL.', form.errors['website'])
+
+class AccountSettingsViewTests(TestCase):
+    def test_get_account_settings_rejects_unauthenticated_user(self):
+        # Arrange
+        account_settings_url = reverse('account_settings')
+
+        # Act
+        response = self.client.get(reverse('account_settings'))
+
+        # Assert
+        self.assertRedirects(response, f'/login/?next={account_settings_url}')
+    
+    def test_post_account_settings_rejects_unauthenticated_user(self):
+        # Arrange
+        account_settings_url = reverse('account_settings')
+
+        # Act
+        response = self.client.post(reverse('account_settings'))
+
+        # Assert
+        self.assertRedirects(response, f'/login/?next={account_settings_url}')
+    
+    def test_get_account_settings_includes_correct_profile(self):
+        # Arrange
+        user = factories.UserFactory()
+        self.client.force_login(user)
+
+        # Act
+        response = self.client.get(reverse('account_settings'))
+
+        # Assert
+        self.assertTemplateUsed(response, 'account_settings.html')
+        self.assertTrue('profile' in response.context)
+        self.assertEqual(user.profile.display_name, response.context['profile'].display_name)
+    
+    def test_post_account_settings_modifies_settings(self):
+        # Arrange
+        user = factories.UserFactory()
+        self.client.force_login(user)
+
+        # Act
+        self.client.post(
+            reverse('account_settings'),
+            {
+                'enable_shoutwall': False,
+                'enable_notifications': True,
+                'enable_shoutwall_notifications': True,
+                'email': 'newuser@website.com'
+                }
+        )
+
+        # Assert
+        user.profile.refresh_from_db()
+        user.refresh_from_db()
+        self.assertFalse(user.profile.enable_shoutwall)
+        self.assertTrue(user.profile.enable_shoutwall_notifications)
+        self.assertTrue(user.profile.enable_notifications)
+        self.assertEqual('newuser@website.com', user.email)
+    
+    def test_email_address_cannot_be_blank(self):
+        # Arrange
+        user = factories.UserFactory()
+        self.client.force_login(user)
+
+        # Act
+        response = self.client.post(reverse('account_settings'), {'enable_shoutwall': False, 'email': ''})
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('This field is required.', form.errors['email'])
+    
+    def test_email_address_must_be_valid(self):
+        # Arrange
+        user = factories.UserFactory()
+        self.client.force_login(user)
+
+        # Act
+        response = self.client.post(reverse('account_settings'), {'enable_shoutwall': False, 'email': 'not an email address'})
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('Enter a valid email address.', form.errors['email'])
+    
+    def test_email_address_must_be_unique(self):
+        # Arrange
+        user = factories.UserFactory()
+        user_2 = factories.UserFactory()
+        self.client.force_login(user)
+
+        # Act
+        response = self.client.post(reverse('account_settings'), {'enable_shoutwall': False, 'email': user_2.email})
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('This email address is already in use.', form.errors['email'])
+    
+    def test_email_address_cannot_be_from_blacklisted_domain(self):
+        # Arrange
+        user = factories.UserFactory()
+        factories.BlacklistedDomainFactory(domain='bad-domain.com', added_by=factories.UserFactory())
+        self.client.force_login(user)      
+
+        # Act
+        response = self.client.post(reverse('account_settings'), {'enable_shoutwall': False, 'email': 'user@bad-domain.com'})  
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIn('Email addresses from this domain are not allowed.', form.errors['email'])
 
 class FrontPageViewTests(TestCase):
     def test_front_page_has_five_most_recent_news_items(self):

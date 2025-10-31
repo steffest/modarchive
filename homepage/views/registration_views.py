@@ -11,9 +11,8 @@ from django.views.generic.base import TemplateView
 
 from homepage.forms import EmailAddressInUseError, RegisterUserForm
 from homepage.functions import is_recaptcha_success
-from homepage.models import Profile
 from homepage.tokens import account_activation_token
-from homepage.view.homepage_views import RedirectAuthenticatedUserMixin
+from homepage.views.homepage_views import RedirectAuthenticatedUserMixin
 
 class AccountActivationCompleteView(RedirectAuthenticatedUserMixin, TemplateView):
     template_name = 'registration/account_activation_complete.html'

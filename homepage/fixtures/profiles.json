@@ -1,0 +1,51 @@
+[
+    {
+        "model": "homepage.profile",
+        "pk": 1,
+        "fields": {
+            "display_name": "Test User",
+            "blurb": "This is my blurb",
+            "user_id": 1,
+            "website": "https://modarchive.org",
+            "enable_notifications": false,
+            "enable_shoutwall": true,
+            "enable_shoutwall_notifications": false,
+            "update_date": "2022-01-21 20:33:00+00:00"
+
+        }
+    },
+    {
+        "model": "homepage.profile",
+        "pk": 2,
+        "fields": {
+            "display_name": "Superuser",
+            "user_id": 2,
+            "enable_notifications": false,
+            "enable_shoutwall": false,
+            "enable_shoutwall_notifications": false,
+            "update_date": "2022-01-21 20:33:00+00:00"
+        }
+    },
+    {
+        "model": "homepage.profile",
+        "pk": 3,
+        "fields": {
+            "display_name": "Arcturus",
+            "user_id": 3,
+            "enable_notifications": false,
+            "enable_shoutwall": true,
+            "enable_shoutwall_notifications": false,
+            "update_date": "2022-01-21 20:33:00+00:00"
+        }
+    },
+    {
+        "model": "homepage.blacklisteddomain",
+        "pk": 1,
+        "fields": {
+            "domain": "blacklisted-domain.com",
+            "hits": 1,
+            "added_by": 2,
+            "update_date": "2022-01-21 20:33:00+00:00"
+        }
+    }
+]

@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 
 from django.urls import reverse
 
-from homepage.view.common_views import PageNavigationListView
+from homepage.views.common_views import PageNavigationListView
 from songs.models import Song
 
 BROWSE_SONGS_TEMPLATE = 'browse_songs.html'

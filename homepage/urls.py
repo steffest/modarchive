@@ -2,16 +2,15 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
 from django.views.generic.base import TemplateView
 
-from homepage.view import password_views, registration_views
-from homepage.view.bulk_upload_view import BulkUploadView
-from homepage.view.homepage_views import account_settings, LoginView, HomePageView
-from homepage.view.legacy_redirect_view import LegacyUrlRedirectionView
-from homepage.view.profile_view import ProfileView, UpdateProfileView, ProfileFavoritesView, ProfileCommentsView
+from homepage.views import password_views, registration_views
+from homepage.views.bulk_upload_view import BulkUploadView
+from homepage.views.homepage_views import LoginView, HomePageView
+from homepage.views.legacy_redirect_view import LegacyUrlRedirectionView
+from homepage.views.profile_views import ProfileView, UpdateProfileView, ProfileFavoritesView, ProfileCommentsView, AccountSettingsView
 
 urlpatterns = [
     # Basic homepage
     path('', HomePageView.as_view(), {}, 'home'),
-    path('account_settings/', account_settings, {}, 'account_settings'),
 
     # Basic auth functionality
     path('login/', LoginView.as_view(), name='login', kwargs={'next': '/'}),
@@ -42,7 +41,8 @@ urlpatterns = [
     path('profiles/<int:pk>/', ProfileView.as_view(), {}, 'view_profile'),
     path('profiles/<int:pk>/comments', ProfileCommentsView.as_view(), {}, 'view_profile_comments'),
     path('profiles/<int:pk>/favorites', ProfileFavoritesView.as_view(), {}, 'view_profile_favorites'),
-    path('profiles/update/', UpdateProfileView.as_view(), {}, 'update_profile')
+    path('profiles/update/', UpdateProfileView.as_view(), {}, 'update_profile'),
+    path('account_settings', AccountSettingsView.as_view(), {}, 'account_settings'),
 ]
 
-handler404 = 'homepage.view.homepage_views.page_not_found_view'
+handler404 = 'homepage.views.homepage_views.page_not_found_view'

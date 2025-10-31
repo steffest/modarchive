@@ -15,6 +15,13 @@
     <div class="fs-2">
         Profile: {{ profile.display_name }}
     </div>
+    <p>
+        Member since {{ profile.create_date|date:"M d, Y" }}
+        {% if profile.website %}
+            <br/>
+            <a href="{{profile.website}}">Visit Website</a>
+        {% endif %}
+    </p>
 
     <ul class="nav nav-pills">
         <li class="nav-item">
@@ -27,7 +34,7 @@
             <a class="nav-link" href="{% url 'view_profile_favorites' profile.pk %}">Favorites</a>
         </li>
     </ul>
-    
+
     <hr>
 
     <div class="tab-content mx-3 mt-2">

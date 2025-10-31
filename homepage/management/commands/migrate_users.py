@@ -113,6 +113,10 @@ class Command(BaseCommand):
         email = legacy_user.profile_email
         is_staff = True if legacy_user.cred_admin == "1" else False
         date_joined = legacy_user.date
+        enable_notifications = True if legacy_user.profile_notifications == 1 else False
+        enable_shoutwall_notifications = True if legacy_user.profile_shout_notifications == 1 else False
+        enable_shoutwall = True if legacy_user.profile_shoutwall_status == 1 else False
+        website = legacy_user.profile_web
 
         # Create User object (no ID assignment - let Django auto-assign)
         user_data = User(
@@ -130,7 +134,11 @@ class Command(BaseCommand):
             blurb=legacy_user.profile_blurb,
             create_date=legacy_user.date,
             update_date=legacy_user.lastlogin,
-            legacy_id=legacy_user.userid
+            legacy_id=legacy_user.userid,
+            enable_notifications=enable_notifications,
+            enable_shoutwall_notifications=enable_shoutwall_notifications,
+            enable_shoutwall=enable_shoutwall,
+            website=website
             # user will be set after bulk user creation
         )
 

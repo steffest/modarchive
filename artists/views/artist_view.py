@@ -3,7 +3,7 @@ from django.views.generic import DetailView, ListView
 
 from artists.models import Artist
 from songs.models import Song
-from homepage.view.common_views import PageNavigationListView
+from homepage.views.common_views import PageNavigationListView
 
 class ArtistView(DetailView):
     model = Artist

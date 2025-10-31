@@ -24,10 +24,6 @@ class HomePageView(TemplateView):
 def page_not_found_view(request, exception):
     return render(request, '404.html')
 
-@login_required
-def account_settings(request):
-    return render(request, 'account_management/account_settings.html')
-
 class LoginView(LoginView):
     template_name = 'account_management/login.html'
     form_class = LoginForm

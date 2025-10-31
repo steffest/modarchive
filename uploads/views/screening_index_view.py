@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models.query import QuerySet
 from django.utils import timezone
 
-from homepage.view.common_views import PageNavigationListView
+from homepage.views.common_views import PageNavigationListView
 from uploads.forms import ScreeningQueueFilterForm
 from uploads.models import NewSong
 from uploads import constants

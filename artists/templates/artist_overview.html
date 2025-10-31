@@ -24,6 +24,11 @@
     {% if user.profile and user.profile.id == artist.profile.id %}
         - <a href="{% url 'update_profile' %}">Update your profile</a>
     {% endif %}
+
+    {% if artist.profile.website %}
+        <br/>
+        <a href="{{artist.profile.website}}">Visit Website</a>
+    {% endif %}
 </p>
 {% endif %}
 

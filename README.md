@@ -91,10 +91,11 @@ In Visual Studio Code, click on "Testing" and select pytest as your testing fram
 
 ## Set up your local data and files
 
-You can load some seed data into your local database with the following commands:
+You can load some seed data into your local database with the following command:
 
-    python manage.py loaddata ./songs/fixtures/songs.json
-    python manage.py loaddata ./artists/fixtures/artists.json
+    python manage.py prepare_local_data
+
+You can use any created account to log in to the local archive. The username and password of the accounts are displayed in the output.
 
 ### Set up a local archive
 

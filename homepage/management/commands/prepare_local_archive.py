@@ -55,7 +55,7 @@ class Command(BaseCommand):
             print(f"File already exists for {song.title}")
             return
 
-        url = f"{base_url}?moduleid={song.legacy_id}&zip=1"
+        url = f"{base_url}?moduleid={song.pk}&zip=1"
         try:
             print(f"⬇️ Downloading {url}")
             response = requests.get(url, timeout=10)
@@ -66,7 +66,7 @@ class Command(BaseCommand):
 
             print(f"✅ Saved {archive_location}")
         except Exception as e:
-            print(f"Failed to download song {song.legacy_id}: {e}")
+            print(f"Failed to download song {song.pk}: {e}")
     
     def get_format_dir(self, main_dir: Path, format_name: str) -> Path:
         format_dir = main_dir / format_name

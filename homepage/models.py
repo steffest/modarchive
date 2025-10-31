@@ -14,6 +14,10 @@ class Profile(models.Model):
     legacy_id=models.IntegerField(null=True, db_index=True)
     display_name = models.CharField(max_length=255)
     blurb = models.TextField(max_length=24000, null=True, blank=True)
+    enable_notifications = models.BooleanField(default=False)
+    enable_shoutwall_notifications = models.BooleanField(default=False)
+    enable_shoutwall = models.BooleanField(default=True)
+    website = models.URLField(blank=True, null=True, max_length=100)
     create_date=models.DateTimeField(default=timezone.now)
     update_date=models.DateTimeField(auto_now=True)
 
@@ -27,7 +31,7 @@ class BlacklistedDomain(models.Model):
     domain=models.CharField(max_length=255, unique=True)
     hits=models.IntegerField(default=0)
     added_by=models.ForeignKey(User, on_delete=models.RESTRICT)
-    create_date=models.DateTimeField(auto_now_add=True)
+    create_date=models.DateTimeField(default=timezone.now)
     update_date=models.DateTimeField(auto_now=True)
 
 class News(models.Model):

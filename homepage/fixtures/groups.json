@@ -1,0 +1,50 @@
+[
+    {
+        "model": "auth.group",
+        "pk": 1,
+        "fields": {
+            "name": "Standard",
+            "permissions": [
+                ["add_comment", "interactions", "comment"],
+                ["add_favorite", "interactions", "favorite"],
+                ["delete_favorite", "interactions", "favorite"]
+            ]
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 2,
+        "fields": {
+            "name": "Artists",
+            "permissions": [
+                ["add_comment", "interactions", "comment"],
+                ["add_favorite", "interactions", "favorite"],
+                ["delete_favorite", "interactions", "favorite"],
+                ["add_artistcomment", "interactions", "artistcomment"]
+            ]
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 3,
+        "fields": {
+            "name": "Admins",
+            "permissions": [
+                ["add_comment", "interactions", "comment"],
+                ["add_favorite", "interactions", "favorite"],
+                ["delete_favorite", "interactions", "favorite"],
+                ["add_artistcomment", "interactions", "artistcomment"]
+            ]
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 4,
+        "fields": {
+            "name": "Screeners",
+            "permissions": [
+                ["can_approve_songs", "uploads", "newsong"]
+            ]
+        }
+    }
+]

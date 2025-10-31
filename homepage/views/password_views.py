@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 
 from homepage.forms import ChangePasswordForm, ForgotPasswordForm, ResetPasswordForm
-from homepage.view.homepage_views import RedirectAuthenticatedUserMixin
+from homepage.views.homepage_views import RedirectAuthenticatedUserMixin
 
 class PasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     template_name = 'account_management/change_password.html'

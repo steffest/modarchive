@@ -42,14 +42,11 @@
                             Logged in as: {{ user.username }}
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'account_settings' %}">Account Settings</a></li>
                             {% if user.profile %}
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'view_profile' user.profile.id %}">View your profile</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'update_profile' %}">Update your profile</a>
-                                </li>
+                                <li><a class="dropdown-item" href="{% url 'view_profile' user.profile.id %}">View Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'update_profile' %}">Update Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'account_settings' %}">Account Settings</a></li>
+                                <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
                             {% endif %}
                             <li><a class="dropdown-item" href="{% url 'pending_uploads' %}">Pending Uploads</a></li>
                             <li><hr class="dropdown-divider"></li>

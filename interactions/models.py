@@ -5,6 +5,9 @@ from songs.models import Song
 from homepage.models import Profile
 
 class Comment(models.Model):
+    class Meta:
+        ordering = ['-create_date']
+
     class Ratings(models.IntegerChoices):
         _1 = 1, _("1: Very poor")
         _2 = 2, _("2: Poor")

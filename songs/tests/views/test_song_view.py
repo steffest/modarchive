@@ -25,10 +25,10 @@ class ViewSongTests(TestCase):
         self.assertEqual(self.FILE_2_FILENAME, song.filename)
         self.assertEqual(self.FILE_2_TITLE, song.get_title())
         self.assertEqual(2, len(song.comment_set.all()))
-        self.assertEqual(self.COMMENT_TEXT_1, song.comment_set.all()[0].text)
-        self.assertEqual(self.COMMENT_TEXT_2, song.comment_set.all()[1].text)
-        self.assertEqual(10, song.comment_set.all()[0].rating)
-        self.assertEqual(5, song.comment_set.all()[1].rating)
+        self.assertEqual(self.COMMENT_TEXT_1, song.comment_set.all()[1].text)
+        self.assertEqual(self.COMMENT_TEXT_2, song.comment_set.all()[0].text)
+        self.assertEqual(10, song.comment_set.all()[1].rating)
+        self.assertEqual(5, song.comment_set.all()[0].rating)
 
     def test_unauthenticated_user_cannot_comment(self):
         # Arrange
