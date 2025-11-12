@@ -1,0 +1,28 @@
+{% extends 'base_page/base.html' %}
+{% load markdownify %}
+
+{% block title %}
+    {{ block.super }}: {{profile.display_name}} messages
+{% endblock %}
+
+{% block content %}
+    <div class="fs-2">
+        Profile: {{ profile.display_name }}
+    </div>
+
+    {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='songs' %}
+    
+    <hr>
+
+    <div class="tab-content">
+        {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
+
+        <ul>
+            {% for song in songs %}
+            <li>
+                <a href="{% url 'view_song' song.id %}">{{ song.get_title }}</a>
+            </li>
+            {% empty %}<li>No songs yet.</li>{% endfor %}
+        </ul>        
+    </div>
+{% endblock %}

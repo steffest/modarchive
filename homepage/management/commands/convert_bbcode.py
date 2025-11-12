@@ -3,7 +3,7 @@ import re
 from django.core.management.base import BaseCommand
 from interactions.models import Comment, ArtistComment
 from songs.models import Song
-from homepage.models import Profile
+from homepage.models import Profile, Message
 
 class Command(BaseCommand):
     help = 'Converts from bbcode to markdown for comments, profile blurbs and artist comments'
@@ -15,12 +15,16 @@ class Command(BaseCommand):
                             help='Convert bbcode to markdown for artist comments')
         parser.add_argument('--profile_blurbs', action='store_true',
                             help='Convert bbcode to markdown for profile blurbs')
+        parser.add_argument('--messages', action='store_true',
+                            help='Convert bbcode to markdown for shoutwall messages')
 
     def handle(self, *args, **options):
         if options['comments']:
             self.convert_comments()
         elif options['artist_comments']:
             self.convert_artist_comments()
+        elif options['messages']:
+            self.convert_messages()
         else:
             self.convert_profile_blurbs()
 
@@ -64,6 +68,25 @@ class Command(BaseCommand):
             if comment.text != text:
                 comment.text = text
                 comment.save()
+
+    def convert_messages(self):
+        messages = Message.objects.all()
+        counter = 0
+        print(f"Converting bbcode for {len(messages)} messages.")
+
+        for message in messages:
+            counter += 1
+
+            text = message.text
+            text = self.convert_bold(text)
+            text = self.convert_italic(text)
+
+            if counter % 1000 == 0:
+                print(f"Converted {counter} messages.")
+
+            if message.text != text:
+                message.text = text
+                message.save()
 
     def convert_profile_blurbs(self):
         profiles = Profile.objects.all()

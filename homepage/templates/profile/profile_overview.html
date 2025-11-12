@@ -1,0 +1,49 @@
+{% extends 'base_page/base.html' %}
+{% load markdownify %}
+{% load filters %}
+
+{% block title %}
+    {{ block.super }}: {{profile.display_name}} profile
+{% endblock %}
+
+{% block content %}
+    {% if user.profile and user.profile.id == profile.id %}
+        <a href="{% url 'update_profile' %}">Update your profile</a>
+        <br/><br/>
+    {% endif %}
+
+    <div class="fs-2">
+        Profile: {{ profile.display_name }}
+    </div>
+
+    {% include "profile/profile_header_and_navigation.html" with profile=profile artist=artist user=user active_tab='overview' %}
+
+    <hr>
+
+    <div class="tab-content mx-3 mt-2">
+        {% if profile.blurb %}
+            {{ profile.blurb|markdownify:"profile"|modpage|safe }}
+        {% endif %}
+    </div>
+
+    {% if profile.enable_shoutwall and most_recent_messages %}
+        <div class="tab-content">
+            {% for message in most_recent_messages %}
+                <div class="bg-success bg-opacity-25 border border-dark rounded p-1 mx-4 my-2">
+                    <div><strong><a href="{% url 'view_profile' message.sender.pk %}">{{ message.sender.display_name }}</a></strong> wrote on {{message.create_date|date:"F j, o"}}:</div>
+                    <p>{{ message.text|markdownify:"message"|modpage|safe }}</p>
+                    {% if message.reply_recipient and message.reply_to %}
+                        <div class="fs-6">
+                            In reply to <a href="{% url 'view_profile' message.reply_recipient.pk %}">{{message.reply_recipient.display_name}}</a>
+                        </div>
+                        <div class="border border-dark bg-opacity-25 ms-4 p-1 my-2">
+                            <em>{{ message.reply_to.text|markdownify:"message"|modpage|safe }}</em>
+                        </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No messages yet</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

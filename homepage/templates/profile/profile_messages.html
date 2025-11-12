@@ -1,0 +1,41 @@
+{% extends 'base_page/base.html' %}
+{% load markdownify %}
+{% load filters %}
+
+{% block title %}
+    {{ block.super }}: {{profile.display_name}} messages
+{% endblock %}
+
+{% block content %}
+    <div class="fs-2">
+        Profile: {{ profile.display_name }}
+    </div>
+
+    {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='messages' %}
+    
+    <hr>
+
+    {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
+
+    {% for message in object_list %}
+        <div class="bg-success bg-opacity-25 border border-dark rounded p-1 mx-4 my-2">
+        <div>
+            <strong>{{ message.sender.display_name }}</strong>
+            wrote on {{ message.create_date|date:"F j, o" }}:
+        </div>
+        <p>{{ message.text|markdownify:"message"|modpage|safe }}</p>
+        </div>
+
+        {% for reply in message.thread_replies %}
+        <div class="bg-light border border-dark rounded p-1 mx-5 my-2 ms-5">
+            <div>
+                <strong>{{ reply.sender.display_name }}</strong>
+                replied on {{ reply.create_date|date:"F j, o" }}:
+            </div>
+            <p>{{ reply.text|markdownify:"message"|modpage|safe }}</p>
+        </div>
+        {% endfor %}
+    {% empty %}
+        Nothing here
+    {% endfor %}
+{% endblock %}

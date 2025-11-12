@@ -1,0 +1,18 @@
+{% if page_obj.paginator.num_pages > 1 %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% for i in page_range|default_if_none:page_obj.paginator.get_elided_page_range %}
+            {% if page_obj.number == i %}
+                <li class="active page-item"><span class="page-link">{{ i }}</span>
+                </li>
+            {% else %}
+                {% if i == page_obj.paginator.ELLIPSIS %}
+                    <li class="page-item"><span class="page-link">{{ i }}</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}

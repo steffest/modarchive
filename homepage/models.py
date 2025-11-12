@@ -43,3 +43,16 @@ class News(models.Model):
     profile=models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     create_date=models.DateTimeField(auto_now_add=True)
     update_date=models.DateTimeField(auto_now=True)
+
+class Message(models.Model):
+    profile=models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='profile_messages')
+    sender=models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='sent_messages')
+    thread_starter=models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='all_replies')
+    reply_to=models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='replies')
+    reply_recipient=models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True, related_name='received_replies')
+    text=models.TextField(max_length=6000)
+    create_date=models.DateTimeField(default=timezone.now, editable=False)
+    update_date=models.DateTimeField(auto_now=True, null=True)
+
+    def __str__(self):
+        return f"Message(id={self.id}, sender={self.sender_id}, profile={self.profile_id})"

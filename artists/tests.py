@@ -19,105 +19,58 @@ class ArtistViewTests(TestCase):
         actual_length = len(response.context['object_list'])
         self.assertEqual(expected_length, actual_length, f"Expected {expected_length} objects in artists list but got {actual_length}")
         self.assertTemplateUsed(response, 'artist_list.html')
-
-    def test_artist_view_contains_specific_artist(self):
+    
+    def test_redirects_to_profile_when_profile_exists_for_artist(self):
         # Arrange
-        artist = factories.ArtistFactory(name='Arcturus', legacy_id=69117)
+        user = homepage_factories.UserFactory()
+        artist = factories.ArtistFactory(name='Arcturus', legacy_id=69117, user=user, profile=user.profile)
 
         # Act
         response = self.client.get(reverse('view_artist', kwargs = {'pk': artist.id}))
 
         # Assert
-        self.assertTemplateUsed(response, 'artist_overview.html')
-        self.assertTrue('artist' in response.context)
-
-        artist = response.context['artist']
-        self.assertEqual('Arcturus', artist.name)
-        self.assertEqual(69117, artist.legacy_id)
-
-    def test_artist_songs_view_contains_specific_artist(self):
-        # Arrange
-        artist = factories.ArtistFactory(name='Arcturus', legacy_id=69117)
-
-        # Act
-        response = self.client.get(reverse('view_artist_songs', kwargs = {'pk': artist.id}))
-
-        # Assert
-        self.assertTemplateUsed(response, 'artist_songs.html')
-        self.assertTrue('artist' in response.context)
-
-        artist = response.context['artist']
-        self.assertEqual('Arcturus', artist.name)
-        self.assertEqual(69117, artist.legacy_id)
-
-    def test_artist_comments_view_contains_specific_artist(self):
-        # Arrange
-        user = homepage_factories.UserFactory()
-        artist = factories.ArtistFactory(name='Arcturus', legacy_id=69117, user=user, profile=user.profile)
-
-        # Act
-        response = self.client.get(reverse('view_artist_comments', kwargs = {'pk': artist.id}))
-
-        # Assert
-        self.assertTemplateUsed(response, 'artist_comments.html')
-        self.assertTrue('artist' in response.context)
-
-        artist = response.context['artist']
-        self.assertEqual('Arcturus', artist.name)
-        self.assertEqual(69117, artist.legacy_id)
-
-    def test_artist_favorites_view_contains_specific_artist(self):
-        # Arrange
-        user = homepage_factories.UserFactory()
-        artist = factories.ArtistFactory(name='Arcturus', legacy_id=69117, user=user, profile=user.profile)
-
-        # Act
-        response = self.client.get(reverse('view_artist_favorites', kwargs = {'pk': artist.id}))
-
-        # Assert
-        self.assertTemplateUsed(response, 'artist_favorites.html')
-        self.assertTrue('artist' in response.context)
-
-        artist = response.context['artist']
-        self.assertEqual('Arcturus', artist.name)
-        self.assertEqual(69117, artist.legacy_id)
-
-class ArtistSongViewTests(TestCase):
-    def test_artist_song_view_contains_songs(self):
+        self.assertRedirects(response, reverse('view_profile', kwargs = {'pk': user.profile.id}))
+    
+    def test_contains_songs(self):
         # Arrange
         songs = [song_factories.SongFactory() for _ in range(10)]
-
         artist = factories.ArtistFactory(name='Arcturus', songs=songs)
 
-        # Act
-        response = self.client.get(reverse('view_artist_songs', kwargs = {'pk': artist.pk}))
+        response = self.client.get(reverse('view_artist', kwargs = {'pk': artist.id}))
 
-        # Assert
         self.assertEqual(10, len(response.context['songs']))
 
-    def test_artist_song_view_contains_first_page_of_songs(self):
+    def test_contains_first_page_of_songs(self):
         # Arrange
         songs = [song_factories.SongFactory() for _ in range(30)]
-
         artist = factories.ArtistFactory(name='Arcturus', songs=songs)
+        expected_first_page = list(artist.songs.order_by("-create_date")[:25])
 
         # Act
-        response = self.client.get(reverse('view_artist_songs', kwargs = {'pk': artist.pk}))
+        response = self.client.get(reverse('view_artist', kwargs = {'pk': artist.id}))
 
         # Assert
-        self.assertEqual(25, len(response.context['songs']))
+        self.assertEqual(response.status_code, 200)
+        page_songs = list(response.context["songs"])
+        self.assertEqual(len(page_songs), 25)
+        self.assertEqual(page_songs, expected_first_page)
+        self.assertEqual(artist, response.context['artist'])
 
-    def test_artist_song_view_contains_second_page_of_songs(self):
+    def test_contains_second_page_of_songs(self):
         # Arrange
         songs = [song_factories.SongFactory() for _ in range(30)]
-
         artist = factories.ArtistFactory(name='Arcturus', songs=songs)
+        expected_second_page = list(artist.songs.order_by("-create_date")[25:])
 
         # Act
-        response = self.client.get(reverse('view_artist_songs', kwargs = {'pk': artist.pk}) + "?page=2")
+        response = self.client.get(reverse('view_artist', kwargs = {'pk': artist.id}) + "?page=2")
 
         # Assert
-        self.assertEqual(5, len(response.context['songs']))
+        self.assertEqual(response.status_code, 200)
+        page_songs = list(response.context["songs"])
+        self.assertEqual(len(page_songs), 5)
+        self.assertEqual(page_songs, expected_second_page)
+        self.assertEqual(artist, response.context['artist'])
 
 class ArtistModelTests(TestCase):
     def test_creates_random_token_on_save(self):

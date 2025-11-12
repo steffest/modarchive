@@ -44,4 +44,4 @@ class Favorite(models.Model):
 
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     song = models.ForeignKey(Song, on_delete=models.CASCADE)
-    create_date = models.DateTimeField(auto_now_add=True)
+    create_date = models.DateTimeField(default=timezone.now, editable=False)

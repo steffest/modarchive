@@ -15,37 +15,11 @@
     </div>
 {% endif %}
 
+<div class="alert alert-warning">
+    This artist is not a modarchive user and they do not actively maintain this page. If there concerns about this page, please contact modarchive staff.
+</div>
+
 <div class='fs-2 title'>{{ artist.name }}</div>
-
-{% if artist.profile %}
-<p>
-    Member since {{ artist.profile.create_date|date:"M d, Y" }}
-
-    {% if user.profile and user.profile.id == artist.profile.id %}
-        - <a href="{% url 'update_profile' %}">Update your profile</a>
-    {% endif %}
-
-    {% if artist.profile.website %}
-        <br/>
-        <a href="{{artist.profile.website}}">Visit Website</a>
-    {% endif %}
-</p>
-{% endif %}
-
-<ul class="nav nav-pills">
-    <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="{% url 'view_artist' artist.pk %}">Overview</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'view_artist_songs' artist.pk %}">Songs</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'view_artist_comments' artist.pk %}">Comments</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'view_artist_favorites' artist.pk %}">Favorites</a>
-    </li>
-</ul>
 
 <hr>
 
@@ -54,6 +28,16 @@
         {{ artist.profile.blurb|markdownify:"profile"|modpage|safe }}
     {% endif %}
 </div>
+
+{% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
+
+<ul>
+    {% for song in songs %}
+    <li>
+        <a href="{% url 'view_song' song.id %}">{{ song.get_title }}</a>
+    </li>
+    {% empty %}<li>No songs yet.</li>{% endfor %}
+</ul>        
 
 <p>
     <br/>

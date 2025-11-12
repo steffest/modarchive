@@ -27,12 +27,16 @@ class Command(BaseCommand):
             self.create_user('test-user', [1])
             self.create_user('superuser', [1, 2, 3, 4], True, True)
             self.create_user('test-artist', [1, 2])
+            self.create_user('test-screener', [1, 4])
+            self.create_user('test-quiet-artist', [1, 2])
 
         # Load remaining fixtures
         fixtures = [
             "homepage/fixtures/profiles.json",
+            "homepage/fixtures/messages.json",
             "songs/fixtures/songs.json",
             "artists/fixtures/artists.json",
+            "homepage/fixtures/favorites.json",
         ]
 
         for fixture in fixtures:

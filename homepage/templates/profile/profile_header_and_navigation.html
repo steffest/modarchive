@@ -1,0 +1,36 @@
+{% if profile %}
+<p>
+    Member since {{ profile.create_date|date:"M d, Y" }}
+
+    {% if user.profile and user.profile.id == profile.id %}
+        - <a href="{% url 'update_profile' %}">Update your profile</a>
+    {% endif %}
+
+    {% if profile.website %}
+        <br/>
+        <a href="{{profile.website}}">Visit Website</a>
+    {% endif %}
+</p>
+{% endif %}
+
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link {% if active_tab == 'overview' %}active{% endif %}" aria-current="page" href="{% url 'view_profile' profile.pk %}">Overview</a>
+    </li>
+    {% if artist %}
+        <li class="nav-item">
+            <a class="nav-link {% if active_tab == 'songs' %}active{% endif %}" href="{% url 'view_profile_songs' profile.pk %}">Songs</a>
+        </li>
+    {% endif %}
+    <li class="nav-item">
+        <a class="nav-link {% if active_tab == 'comments' %}active{% endif %}" href="{% url 'view_profile_comments' profile.pk %}">Comments</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if active_tab == 'favorites' %}active{% endif %}" href="{% url 'view_profile_favorites' profile.pk %}">Favorites</a>
+    </li>
+    {% if profile.enable_shoutwall %}
+        <li class="nav-item">
+            <a class="nav-link {% if active_tab == 'messages' %}active{% endif %}" href="{% url 'view_profile_messages' profile.pk %}">Messages</a>
+        </li>
+    {% endif %}
+</ul>

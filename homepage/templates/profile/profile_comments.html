@@ -2,38 +2,25 @@
 {% load markdownify %}
 
 {% block title %}
-    {{ block.super }}: {{profile.display_name}} profile
+    {{ block.super }}: {{profile.display_name}} comments
 {% endblock %}
 
 {% block content %}
-    {% if user.profile and user.profile.id == profile.id %}
-        <a href="{% url 'update_profile' %}">Update your profile</a>
-        <br/><br/>
-    {% endif %}
-
     <div class="fs-2">
         Profile: {{ profile.display_name }}
     </div>
 
-    <ul class="nav nav-pills">
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'view_profile' profile.pk %}">Overview</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'view_profile_comments' profile.pk %}">Comments</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'view_profile_favorites' profile.pk %}">Favorites</a>
-        </li>
-    </ul>
+    {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='comments' %}
     
     <hr>
 
     <div class="tab-content">        
         <!-- Comments tab -->
+        {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
+
         {% if profile.has_comments %}
             <div class='mx-5'>
-                {% for comment in profile.comment_set.all %}
+                {% for comment in object_list %}
                     <div class="bg-success bg-opacity-25 border border-dark rounded p-1 mx-4 my-2">
                         <div><strong>Song:</strong> <a href="{% url 'view_song' comment.song.id %}">{{comment.song.get_title}}</a> ({{comment.song.filename}}) {% include 'song_artists.html' with song=comment.song %}</div>
                         <div><strong>Posted on:</strong> {{comment.create_date|date:"F j, o"}}</div>

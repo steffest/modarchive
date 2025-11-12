@@ -30,3 +30,9 @@ class NewsFactory(factory.django.DjangoModelFactory):
 
     headline = factory.Sequence(lambda n: 'Headline %d' % n)
     content = factory.Sequence(lambda n: 'This is news content')
+
+class MessageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Message
+    
+    text = factory.Sequence(lambda n: f'Message number {n}')

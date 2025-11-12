@@ -22,6 +22,7 @@ User = get_user_model()
 # 8. --migrate_files_uploader
 # 9. --migrate_redirects
 # 10. --migrate_rejected_files
+# 11. --migrate_messages
 #
 # --update_artist_search_indexes --all
 # --update_song_search_indexes --all
@@ -29,6 +30,7 @@ User = get_user_model()
 # --convert_bbcode --comments
 # --convert_bbcode --artist_comments
 # --convert_bbcode --profile_blurbs
+# --convert_bbcode --messages
 class Command(BaseCommand):
     help = "Migrates the legacy users table"
 

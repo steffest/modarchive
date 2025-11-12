@@ -3,10 +3,9 @@ from django.urls import path, re_path
 from django.views.generic.base import TemplateView
 
 from homepage.views import password_views, registration_views
-from homepage.views.bulk_upload_view import BulkUploadView
 from homepage.views.homepage_views import LoginView, HomePageView
 from homepage.views.legacy_redirect_view import LegacyUrlRedirectionView
-from homepage.views.profile_views import ProfileView, UpdateProfileView, ProfileFavoritesView, ProfileCommentsView, AccountSettingsView
+from homepage.views import profile_views
 
 urlpatterns = [
     # Basic homepage
@@ -34,15 +33,14 @@ urlpatterns = [
     # Legacy URL redirects
     re_path('(?P<php_file>[a-zA-Z]+).php/', LegacyUrlRedirectionView.as_view(), name='login_php'),
 
-    # Bulk uploader tool
-    path('bulk_upload/', BulkUploadView.as_view(), {}, 'bulk_upload'),
-
     # Profiles
-    path('profiles/<int:pk>/', ProfileView.as_view(), {}, 'view_profile'),
-    path('profiles/<int:pk>/comments', ProfileCommentsView.as_view(), {}, 'view_profile_comments'),
-    path('profiles/<int:pk>/favorites', ProfileFavoritesView.as_view(), {}, 'view_profile_favorites'),
-    path('profiles/update/', UpdateProfileView.as_view(), {}, 'update_profile'),
-    path('account_settings', AccountSettingsView.as_view(), {}, 'account_settings'),
+    path('profiles/<int:pk>/', profile_views.ProfileView.as_view(), {}, 'view_profile'),
+    path('profiles/<int:pk>/songs', profile_views.ProfileSongsView.as_view(), {}, 'view_profile_songs'),
+    path('profiles/<int:pk>/comments', profile_views.ProfileCommentsView.as_view(), {}, 'view_profile_comments'),
+    path('profiles/<int:pk>/favorites', profile_views.ProfileFavoritesView.as_view(), {}, 'view_profile_favorites'),
+    path('profiles/<int:pk>/messages', profile_views.ProfileMessagesView.as_view(), {}, 'view_profile_messages'),
+    path('profiles/update/', profile_views.UpdateProfileView.as_view(), {}, 'update_profile'),
+    path('account_settings', profile_views.AccountSettingsView.as_view(), {}, 'account_settings'),
 ]
 
 handler404 = 'homepage.views.homepage_views.page_not_found_view'

@@ -11,6 +11,7 @@ from homepage.tokens import account_activation_token
 from homepage.tests import factories
 from artists import factories as artist_factories
 from songs import factories as song_factories
+from interactions import factories as interaction_factories
 
 User = get_user_model()
 
@@ -331,11 +332,27 @@ class ProfileViewTests(TestCase):
         response = self.client.get(reverse('view_profile', kwargs = {'pk': user.profile.id}))
 
         # Assert
-        self.assertTemplateUsed(response, 'profile.html')
+        self.assertTemplateUsed(response, 'profile/profile_overview.html')
         self.assertTrue('profile' in response.context)
 
         profile = response.context['profile']
-        self.assertEqual('Arcturus', profile.display_name)
+        self.assertEqual(profile, user.profile)
+        self.assertIsNone(response.context['artist'])
+    
+    def test_profile_page_with_artist_contains_requested_profile_and_artist(self):
+        # Arrange
+        user = factories.UserFactory()
+        user.profile.display_name = 'Arcturus'
+        user.profile.save()
+        artist = artist_factories.ArtistFactory(name='Arcturus', legacy_id=69117, user=user, profile=user.profile)
+    
+        # Act
+        response = self.client.get(reverse('view_profile', kwargs = {'pk': user.profile.id}))
+
+        # Assert
+        self.assertTemplateUsed(response, 'profile/profile_overview.html')
+        self.assertEqual(response.context['profile'], user.profile)
+        self.assertEqual(artist, response.context['artist'])
 
     def test_profile_page_responds_with_404_when_profile_does_not_exist(self):
         # Act
@@ -343,17 +360,248 @@ class ProfileViewTests(TestCase):
 
         # Assert
         self.assertEqual(response.status_code, 404)
-
-    def test_redirect_to_artist_page_if_exists_for_profile(self):
+    
+    def test_profile_page_has_most_recent_messages(self):
         # Arrange
         user = factories.UserFactory()
-        artist_factories.ArtistFactory(profile = user.profile, name = 'Arcturus')
+        user_2 = factories.UserFactory()
+        for _ in range(11):
+            factories.MessageFactory(profile=user.profile, sender=user_2.profile)
 
         # Act
         response = self.client.get(reverse('view_profile', kwargs = {'pk': user.profile.id}))
 
         # Assert
-        self.assertRedirects(response, reverse('view_artist', kwargs = {'pk': user.profile.artist.id}))
+        self.assertEqual(response.status_code, 200)
+        most_recent_messages = response.context['most_recent_messages']
+        all_messages = user.profile.profile_messages.order_by('-create_date')
+
+        # Verify only 10 messages are included
+        self.assertEqual(len(most_recent_messages), 10)
+
+        # Verify they are the 10 most recent
+        expected_messages = list(all_messages[:10])
+        self.assertEqual(list(most_recent_messages), expected_messages)
+    
+    def test_profile_page_does_not_have_messages_when_shoutwall_disabled(self):
+        # Arrange
+        user = factories.UserFactory()
+        user_2 = factories.UserFactory()
+        factories.MessageFactory(profile=user.profile, sender=user_2.profile)
+        profile = user.profile
+        profile.enable_shoutwall = False
+        profile.save()
+
+        # Act
+        response = self.client.get(reverse('view_profile', kwargs = {'pk': user.profile.id}))
+
+        # Assert
+        most_recent_messages = response.context.get('most_recent_messages')
+        self.assertIsNone(most_recent_messages)
+
+class ProfileSongViewTests(TestCase):
+    def test_redirects_when_profile_is_not_artist(self):
+        # Arrange
+        user = factories.UserFactory()
+
+        # Act
+        response = self.client.get(reverse('view_profile_songs', kwargs = {'pk': user.profile.id}))
+
+        # Assert
+        self.assertRedirects(response, reverse('view_profile', kwargs = {'pk': user.profile.id}))
+    
+    def test_includes_first_page_of_songs(self):
+        # Arrange
+        user = factories.UserFactory()
+        user.profile.display_name = 'Arcturus'
+        user.profile.save()
+        songs = [song_factories.SongFactory() for _ in range(30)]
+        artist = artist_factories.ArtistFactory(name='Arcturus', legacy_id=69117, user=user, profile=user.profile, songs=songs)
+        expected_first_page = list(artist.songs.order_by("-create_date")[:25])
+        
+        # Act
+        response = self.client.get(reverse('view_profile_songs', kwargs = {'pk': user.profile.id}))
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        page_songs = list(response.context["songs"])
+        self.assertEqual(len(page_songs), 25)
+        self.assertEqual(page_songs, expected_first_page)
+        self.assertEqual(artist, response.context['artist'])
+        self.assertEqual(user.profile, response.context['profile'])
+    
+    def test_includes_second_page_of_songs(self):
+        # Arrange
+        user = factories.UserFactory()
+        user.profile.display_name = 'Arcturus'
+        user.profile.save()
+        songs = [song_factories.SongFactory() for _ in range(30)]
+        artist = artist_factories.ArtistFactory(name='Arcturus', legacy_id=69117, user=user, profile=user.profile, songs=songs)
+        expected_first_page = list(artist.songs.order_by("-create_date")[25:])
+        
+        # Act
+        response = self.client.get(reverse('view_profile_songs', kwargs = {'pk': user.profile.id}) + '?page=2')
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        page_songs = list(response.context["songs"])
+        self.assertEqual(len(page_songs), 5)
+        self.assertEqual(page_songs, expected_first_page)
+        self.assertEqual(artist, response.context['artist'])
+
+class ProfileCommentsViewTest(TestCase):
+    def test_returns_404_when_profile_does_not_exist(self):
+        # Act
+        response = self.client.get(reverse('view_profile_comments', kwargs = {'pk': 500}))
+
+        # Assert
+        self.assertEqual(response.status_code, 404)
+    
+    def test_shows_first_40_comments_on_page_1(self):
+        # Arrange
+        user = factories.UserFactory()
+        songs = [song_factories.SongFactory() for _ in range(50)]
+        comments = [interaction_factories.CommentFactory(profile=user.profile, song=song) for song in songs]
+
+        # Act
+        response = self.client.get(reverse('view_profile_comments', kwargs = {'pk': user.profile.id}))
+
+        # Assert
+        actual_comments = response.context['object_list']
+        self.assertEqual(len(actual_comments), 40)
+
+        # Expect most recent 40
+        expected_comments = list(reversed(comments))[:40]
+        self.assertEqual([f.id for f in actual_comments], [f.id for f in expected_comments])
+    
+    def test_shows_next_comments_on_page_2(self):
+        # Arrange
+        user = factories.UserFactory()
+        songs = [song_factories.SongFactory() for _ in range(50)]
+        comments = [interaction_factories.CommentFactory(profile=user.profile, song=song) for song in songs]
+
+        # Act
+        response = self.client.get(reverse('view_profile_comments', kwargs = {'pk': user.profile.id}) + '?page=2')
+
+        # Assert
+        actual_comments = response.context['object_list']
+        self.assertEqual(len(actual_comments), 10)
+
+        # Expect the *oldest* 10
+        expected_comments = list(reversed(comments))[40:]
+        self.assertEqual([f.id for f in actual_comments], [f.id for f in expected_comments])
+
+class ProfileFavoritesViewTest(TestCase):
+    def test_returns_404_when_profile_does_not_exist(self):
+        # Act
+        response = self.client.get(reverse('view_profile_favorites', kwargs = {'pk': 500}))
+
+        # Assert
+        self.assertEqual(response.status_code, 404)
+
+    def test_shows_first_50_favorites_on_page_1(self):
+        # Arrange
+        user = factories.UserFactory()
+        songs = [song_factories.SongFactory() for _ in range(60)]
+        favorites = [interaction_factories.FavoriteFactory(profile=user.profile, song=song) for song in songs]
+
+        # Act
+        response = self.client.get(reverse('view_profile_favorites', kwargs = {'pk': user.profile.id}))
+
+        # Assert
+        actual_favorites = response.context['object_list']
+        self.assertEqual(len(actual_favorites), 50)
+
+        # Expect most recent 50
+        expected_favorites = list(reversed(favorites))[:50]
+        self.assertEqual([f.id for f in actual_favorites], [f.id for f in expected_favorites])
+    
+    def test_shows_next_favorites_on_page_2(self):
+        # Arrange
+        user = factories.UserFactory()
+        songs = [song_factories.SongFactory() for _ in range(60)]
+        favorites = [interaction_factories.FavoriteFactory(profile=user.profile, song=song) for song in songs]
+
+        # Act
+        response = self.client.get(reverse('view_profile_favorites', kwargs = {'pk': user.profile.id}) + '?page=2')
+
+        # Assert
+        actual_favorites = response.context['object_list']
+        self.assertEqual(len(actual_favorites), 10)
+
+        # Expect the *oldest* 10
+        expected_favorites = list(reversed(favorites))[50:]
+        self.assertEqual([f.id for f in actual_favorites], [f.id for f in expected_favorites])
+
+
+class ProfileMessageViewTests(TestCase):
+    def test_redirects_when_profile_shoutwall_disabled(self):
+        # Arrange
+        user = factories.UserFactory()
+        user.profile.enable_shoutwall = False
+        user.profile.save()
+
+        # Act
+        response = self.client.get(reverse('view_profile_messages', kwargs = {'pk': user.profile.id}))
+
+        # Assert
+        self.assertRedirects(response, reverse('view_profile', kwargs = {'pk': user.profile.id}))
+    
+    def test_returns_404_when_profile_does_not_exist(self):
+        # Act
+        response = self.client.get(reverse('view_profile_messages', kwargs = {'pk': 500}))
+
+        # Assert
+        self.assertEqual(response.status_code, 404)
+    
+    def test_messages_are_paginated(self):
+        # Arrange
+        user = factories.UserFactory()
+        messages = [factories.MessageFactory(profile=user.profile, sender=user.profile) for _ in range(25)]
+        # Create replies
+        [factories.MessageFactory(profile=user.profile, sender=user.profile, thread_starter=msg, reply_to=msg,)for msg in messages]
+
+        # Act
+        response = self.client.get(reverse('view_profile_messages', kwargs = {'pk': user.profile.id}))
+
+        # Assert
+        top_level_messages = response.context["object_list"]
+        self.assertEqual(len(top_level_messages), 20)
+
+        all_rendered_messages = []
+        for msg in top_level_messages:
+            all_rendered_messages.append(msg)
+            all_rendered_messages.extend(msg.replies.all())
+        
+        self.assertEqual(len(all_rendered_messages), 40)
+        expected_top_level_ids =[m.id for m in messages[5:]][::-1]
+        actual_top_level_ids = [m.id for m in top_level_messages]
+        self.assertEqual(expected_top_level_ids, actual_top_level_ids)
+    
+    def test_messages_are_paginated_on_page_2(self):
+        # Arrange
+        user = factories.UserFactory()
+        messages = [factories.MessageFactory(profile=user.profile, sender=user.profile) for _ in range(25)]
+        # Create replies
+        [factories.MessageFactory(profile=user.profile, sender=user.profile, thread_starter=msg, reply_to=msg,)for msg in messages]
+
+        # Act
+        response = self.client.get(reverse('view_profile_messages', kwargs = {'pk': user.profile.id}) + '?page=2')
+
+        # Assert
+        top_level_messages = response.context["object_list"]
+        self.assertEqual(len(top_level_messages), 5)
+
+        all_rendered_messages = []
+        for msg in top_level_messages:
+            all_rendered_messages.append(msg)
+            all_rendered_messages.extend(msg.replies.all())
+        
+        self.assertEqual(len(all_rendered_messages), 10)
+        expected_top_level_ids =[m.id for m in messages[:5]][::-1]
+        actual_top_level_ids = [m.id for m in top_level_messages]
+        self.assertEqual(expected_top_level_ids, actual_top_level_ids)
+
 
 class UpdateProfileViewTests(TestCase):
     def test_get_update_profile_redirects_unauthenticated_user(self):

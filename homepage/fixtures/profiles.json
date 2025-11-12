@@ -32,8 +32,35 @@
         "fields": {
             "display_name": "Arcturus",
             "user_id": 3,
+            "blurb": "Hello, my name is Arcturus.\n\nI have multiple lines in my blurb.",
             "enable_notifications": false,
             "enable_shoutwall": true,
+            "enable_shoutwall_notifications": false,
+            "update_date": "2022-01-21 20:33:00+00:00"
+        }
+    },
+    {
+        "model": "homepage.profile",
+        "pk": 4,
+        "fields": {
+            "display_name": "Test Screener",
+            "user_id": 4,
+            "blurb": "Leave me alone. All I want to do is screen songs.",
+            "enable_notifications": false,
+            "enable_shoutwall": false,
+            "enable_shoutwall_notifications": false,
+            "update_date": "2022-01-21 20:33:00+00:00"
+        }
+    },
+    {
+        "model": "homepage.profile",
+        "pk": 5,
+        "fields": {
+            "display_name": "Test Quiet Artist",
+            "user_id": 5,
+            "blurb": "I am an artist, but my shoutwall is disabled.",
+            "enable_notifications": false,
+            "enable_shoutwall": false,
             "enable_shoutwall_notifications": false,
             "update_date": "2022-01-21 20:33:00+00:00"
         }

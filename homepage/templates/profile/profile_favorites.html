@@ -1,0 +1,29 @@
+{% extends 'base_page/base.html' %}
+{% load markdownify %}
+
+{% block title %}
+    {{ block.super }}: {{profile.display_name}} favorites
+{% endblock %}
+
+{% block content %}
+    <div class="fs-2">
+        Profile: {{ profile.display_name }}
+    </div>
+
+    {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='favorites' %}
+    
+    <hr>
+
+    {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
+
+    <div class="tab-content" id="myTabContent">
+        <ul class='list-group'>
+        <!-- Favorites tab -->
+        {% for favorite in object_list %}
+            <li><a href="{% url 'view_song' favorite.song_id %}">{{ favorite.song.get_title }}</a></li>
+        {% empty %}
+            No favorites added
+        {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

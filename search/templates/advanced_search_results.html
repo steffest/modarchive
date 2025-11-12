@@ -77,23 +77,6 @@
     </tbody>
 </table>
 
-{% if page_range %}
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-        {% for i in page_range|default_if_none:search_results.paginator.get_elided_page_range %}
-            {% if search_results.number == i %}
-                <li class="active page-item"><span class="page-link">{{ i }}</span>
-                </li>
-            {% else %}
-                {% if i == search_results.paginator.ELLIPSIS %}
-                    <li class="page-item"><span class="page-link">{{ i }}</span></li>
-                {% else %}
-                    <li class="page-item"><a class="page-link" href="?{{ request.GET.urlencode }}&page={{ i }}">{{ i }}</a></li>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-    </ul>
-</nav>
-{% endif %}
+{% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 
 {% endblock %}

@@ -1,0 +1,266 @@
+[
+    {
+        "model": "interactions.favorite",
+        "pk": 1,
+        "fields": {
+            "profile": 3,
+            "song": 801
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 2,
+        "fields": {
+            "profile": 3,
+            "song": 32385
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 3,
+        "fields": {
+            "profile": 3,
+            "song": 34073
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 4,
+        "fields": {
+            "profile": 1,
+            "song": 801
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 5,
+        "fields": {
+            "profile": 1,
+            "song": 32385
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 6,
+        "fields": {
+            "profile": 1,
+            "song": 32496
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 7,
+        "fields": {
+            "profile": 1,
+            "song": 33907
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 8,
+        "fields": {
+            "profile": 1,
+            "song": 34073
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 9,
+        "fields": {
+            "profile": 1,
+            "song": 34654
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 10,
+        "fields": {
+            "profile": 1,
+            "song": 39954
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 11,
+        "fields": {
+            "profile": 1,
+            "song": 42654
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 12,
+        "fields": {
+            "profile": 1,
+            "song": 43791
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 13,
+        "fields": {
+            "profile": 1,
+            "song": 44366
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 14,
+        "fields": {
+            "profile": 1,
+            "song": 45655
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 15,
+        "fields": {
+            "profile": 1,
+            "song": 46469
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 16,
+        "fields": {
+            "profile": 1,
+            "song": 46472
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 17,
+        "fields": {
+            "profile": 1,
+            "song": 46502
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 18,
+        "fields": {
+            "profile": 1,
+            "song": 47034
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 19,
+        "fields": {
+            "profile": 1,
+            "song": 47092
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 20,
+        "fields": {
+            "profile": 1,
+            "song": 47267
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 21,
+        "fields": {
+            "profile": 1,
+            "song": 48952
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 22,
+        "fields": {
+            "profile": 1,
+            "song": 49040
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 23,
+        "fields": {
+            "profile": 1,
+            "song": 49136
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 24,
+        "fields": {
+            "profile": 1,
+            "song": 49619
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 25,
+        "fields": {
+            "profile": 1,
+            "song": 54332
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 26,
+        "fields": {
+            "profile": 1,
+            "song": 57604
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 27,
+        "fields": {
+            "profile": 1,
+            "song": 57925
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 28,
+        "fields": {
+            "profile": 1,
+            "song": 59344
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 29,
+        "fields": {
+            "profile": 1,
+            "song": 59854
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 30,
+        "fields": {
+            "profile": 1,
+            "song": 60395
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 31,
+        "fields": {
+            "profile": 1,
+            "song": 63700
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 32,
+        "fields": {
+            "profile": 1,
+            "song": 73308
+        }
+    },
+    {
+        "model": "interactions.favorite",
+        "pk": 33,
+        "fields": {
+            "profile": 1,
+            "song": 140867
+        }
+    }
+]
