@@ -9,7 +9,8 @@
 
 <div class='fs-2'>Advanced Search</div>
 
-<form action="{% url 'advanced_search' %}" method="GET" value="{{request.GET.query}}" novalidate>
+<form action="{% url 'advanced_search' %}" method="GET" value="{{request.GET.query}}" novalidate onsubmit="return window.formSubmit(this)">
+    {% csrf_token %}
     <div id="div_id_query" class="mb-3"> 
         {{form.query}}
     </div>

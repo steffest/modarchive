@@ -1,0 +1,17 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.scriptEnabled{
+  display: none;
+}
+
+body.loaded .scriptEnabled{
+  display: initial;
+}
+
+@import "player";
+@import "range";

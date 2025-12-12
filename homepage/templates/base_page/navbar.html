@@ -18,7 +18,7 @@
                     <a class="nav-link" href="{% url 'advanced_search' %}">Advanced Search</a>
                 </li>
                 <li class="nav-item">
-                    <form action="{% url 'search' %}" method="GET" value={{request.GET.query}}>
+                    <form action="{% url 'search' %}" method="GET" value="{{request.GET.query}}" onsubmit="return window.formSubmit(this)">
                         <input name='query' class='form-control' placeholder="Quick Search" />
                         <input name='songs' type='hidden' value='on' />
                         <input name='artists' type='hidden' value='on' />

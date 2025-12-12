@@ -1,0 +1,349 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.scriptEnabled {
+  display: none;
+}
+
+body.loaded .scriptEnabled {
+  display: initial;
+}
+
+#player {
+  background-color: black;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 130px;
+  border-top: 2px solid #14463a;
+  color: silver;
+  display: none;
+}
+#player.active {
+  display: flex;
+  justify-content: space-between;
+}
+#player.active.standalone {
+  display: block;
+}
+#player.active.standalone #visualizer {
+  width: 100%;
+  height: calc(100vw - 10px);
+  margin-top: 10px;
+}
+#player.standalone {
+  height: unset;
+  top: 0;
+}
+#player #mainDisplay {
+  height: 36px;
+  margin: 4px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+#player #mainDisplay h1 {
+  padding: 0;
+  margin: 0;
+  font-size: 24px;
+  line-height: 36px;
+}
+#player #mainDisplay div {
+  font-size: 11px;
+  line-height: 12px;
+  position: absolute;
+  top: 0;
+  color: #8b9baa;
+  text-align: left;
+}
+#player #mainDisplay div.right {
+  right: 0;
+  text-align: right;
+}
+#player #mainDisplay div.hidden {
+  display: none;
+}
+#player #volumePanel {
+  position: absolute;
+  display: flex;
+  left: 0;
+  top: 81px;
+  width: 120px;
+  align-items: center;
+}
+#player button {
+  display: block;
+  background-color: transparent;
+  border: none;
+  color: transparent;
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+  margin: 0 10px;
+  background-image: url("../_img/play.svg");
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  filter: saturate(0);
+}
+#player button:hover {
+  filter: saturate(1) drop-shadow(0 0 2px #90ddcb);
+  cursor: pointer;
+}
+#player button.pause {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #14463a;
+  border-radius: 50%;
+  background-size: 27px 28px;
+  background-position: center center;
+  background-image: url("../_img/pause.svg");
+}
+#player button.pause.active {
+  background-image: url("../_img/play.svg");
+}
+#player button.next {
+  background-image: url("../_img/next.svg");
+}
+#player button.prev {
+  background-image: url("../_img/next.svg");
+  transform: rotate(180deg);
+}
+#player button.popout {
+  background-image: url("../_img/external.svg");
+}
+#player button.popin {
+  background-image: url("../_img/internal.svg");
+}
+#player button.mono {
+  background-image: url("../_img/mono.svg");
+}
+#player button.mono.active {
+  background-image: url("../_img/stereo.svg");
+}
+#player button.volume {
+  background-image: url("../_img/volume.svg");
+}
+#player button.volume.muted {
+  background-image: url("../_img/volume-muted.svg");
+}
+#player button.info {
+  background-image: url("../_img/info.svg");
+  position: absolute;
+  right: 0;
+  top: 82px;
+}
+#player #playerButtons {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+#player #visualizer {
+  width: 300px;
+  background-color: #30393b;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+#player #visualizer #patternView {
+  position: absolute;
+  left: 4px;
+  top: 0;
+  font-family: "Workbench", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 16px;
+  font-variation-settings: "BLED" 0, "SCAN" 0;
+}
+#player #visualizer #patternView div {
+  white-space: nowrap;
+}
+#player #visualizer #patternView b {
+  color: #e7b47c;
+}
+#player #visualizer #patternView em {
+  color: #66dc9d;
+  font-style: normal;
+}
+#player #visualizer #topBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 53px;
+  background: linear-gradient(0, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.8) 100%);
+  border-bottom: 1px solid #558e7e;
+}
+#player #visualizer #centerBar {
+  position: absolute;
+  top: 53px;
+  height: 15px;
+  left: 0;
+  right: 0;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  background-color: #00b1ff;
+}
+#player #visualizer #bottomBar {
+  position: absolute;
+  top: 68px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(0, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 100%);
+  border-top: 1px solid #170e0e;
+}
+#player .panel:nth-child(1) {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 10px;
+  position: relative;
+}
+
+@media (max-width: 800px) {
+  #player #mainDisplay div {
+    display: none;
+  }
+  #player #volumePanel,
+  #player button.info {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  main {
+    padding-bottom: 270px;
+  }
+  header .modarchive {
+    width: 250px;
+    background-repeat: no-repeat;
+  }
+  #player {
+    height: 260px;
+  }
+  #player.active {
+    display: block;
+  }
+  #player #visualizer {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+@media (max-width: 420px) {
+  header .logo {
+    width: 68px;
+  }
+  header .modarchive {
+    left: 90px;
+  }
+}
+.range {
+  width: 100%;
+  position: relative;
+}
+.range .bar,
+.range .progress {
+  background-color: #616161;
+  position: absolute;
+  height: 2px;
+  left: 0;
+  top: 7px;
+  right: 0;
+}
+.range .progress {
+  background-color: #7dd3bd;
+  top: 0;
+  width: 0;
+  right: unset;
+}
+
+input[type=range] {
+  width: 100%;
+  margin: 0;
+  background-color: transparent;
+  -webkit-appearance: none;
+  position: relative;
+  z-index: 1;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  background: transparent;
+  border: 0;
+  width: 100%;
+  height: 16px;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  margin-top: -0.15px;
+  width: 16px;
+  height: 16px;
+  background: #7dd3bd;
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+input[type=range]::-moz-range-track {
+  background: transparent;
+  border: 0;
+  width: 100%;
+  height: 16px;
+  cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #7dd3bd;
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+input[type=range]::-ms-track {
+  background: transparent;
+  border-color: transparent;
+  border-width: 3.65px 0;
+  color: transparent;
+  width: 100%;
+  height: 15.7px;
+  cursor: pointer;
+}
+
+input[type=range]::-ms-fill-lower {
+  background: transparent;
+  border: 0;
+}
+
+input[type=range]::-ms-fill-upper {
+  background: transparent;
+  border: 0;
+}
+
+input[type=range]::-ms-thumb {
+  width: 16px;
+  height: 16px;
+  background: #7dd3bd;
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 0px;
+  /*Needed to keep the Edge thumb centred*/
+}
+
+/*# sourceMappingURL=main.css.map */

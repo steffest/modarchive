@@ -1,90 +1,22 @@
 {% load static %}
-{% load bootstrap_icons %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<title>Mod Archive Player</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<meta name="description" content="TMA Player"/>
-	<link href="{% static 'player.css' %}" rel="stylesheet"/>
-    <link rel="stylesheet" href="{% static 'modarchive.css' %}">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🔊</text></svg>"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static '_style/main.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&family=Workbench&display=swap" rel="stylesheet">
+
     {% block script %}
-        <script type="module"  src="{% static 'tma_player.js' %}"></script>
+        <script src="{% static '_script/main.js' %}" type="module"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
-    {% endblock %}
+    {% endblock script %}
 </head>
 <body>
-    <div class="container my-2 mx-1 py-2 bg-light rounded tma-standard" id="info">
-        <!--Title-->
-        <div class="container mx-0 h4">
-            <span id="title"></span> (<span id="modfilename"></span>)
-        </div>
-
-        <!--Playback controls-->
-        <div id="controls" class="container mx-0">
-            <!-- Play/pause button-->
-            <button id="playPause" class="btn btn-success btn-lg" onclick="togglePause()" title="Play/Pause">
-                {% bs_icon 'play-fill' %}
-            </button>
-            <!--Next-->
-            <button id="play-button" class="btn btn-success btn-lg" onclick="nextSong()" title="Next random song">
-                {% bs_icon 'skip-end-fill' %}
-            </button>
-            <!--Loop-->
-            <button class="btn btn-success btn-lg" onclick="toggleLoop()" id="autoplay" title="Single repeat">
-                {% bs_icon 'repeat' %}
-            </button>
-            <!--Show Info-->
-            <button class="btn btn-success btn-lg" id="btnInfo" title="Song info" onclick="toggleInfo()">
-                {% bs_icon 'info-circle-fill' %}
-            </button>
-            <!--Add favorite-->
-            <button id="addFav" class="btn btn-success btn-lg disabled">
-                {% bs_icon 'star' %}
-            </button>
-            <!--Download-->
-            <button id="play-button" class="btn btn-success btn-lg" onclick="saveSong()" title="Download song">
-                {% bs_icon 'download' %}
-            </button>
-        </div>
-        <!--Duration-->
-        <div class="nowrap container mx-0">
-            {% bs_icon 'clock' %}<span id="duration"></span>
-        </div>
-        <!--File Size-->
-        <div class="nowrap container mx-0">
-            {% bs_icon 'hdd' %}<span id="sizeInKB"></span>
-        </div>
-        <!--Progress bar-->
-        <div class="nowrap container mx-0">
-            <input class="form-range" id="seekbar" title="Position" type="range" min="0" max="100" value="0" oninput="player.setPos(this.value)" /> <!-- 📍 -->
-        </div>
-        <div id="subsongs" class="nowrap" style="display:none">
-            <select class="form-select" id="subsong" onchange="player.selectSubsong(this.value)">
-            </select>
-        </div>
-
-        <!--Order list-->
-        <div class = "col-auto">
-          <div id="orderList" class="column d-flex justify-content-start gap-2 container mx-0 text-warning bg-dark rounded p-3 font-monospace text-center overflow-x-auto" style="overflow-x: auto; white-space: nowrap;">
-          </div>
-        </div>
-        <div id="myInfo" class="hidden"></div>
-    </div>
-    <div class="container my-2 mx-1 py-2 bg-light rounded tma-standard">
-        <div class="row flex-nowrap" style="overflow-x: auto;">
-            <div class="col" id="col2">
-                <div id="other-panel" class="column text-warning bg-dark rounded p-3 font-monospace overflow-x-auto" style="overflow-x: auto; white-space: nowrap;">
-                    <table id="patternView">
-                        <!-- Content for col2 -->
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="player" class="standalone"></div>
 </body>
 </html>
