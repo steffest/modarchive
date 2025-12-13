@@ -164,9 +164,10 @@ let Player = (()=>{
             updateMetaInfo();
         });
 
-        createButton("Prev", "Play Previous Song" , button=>{
-            gotoPlaylist(-1);
-        })
+        // disable for now - let's re-enable when/if we have playlist support
+        //createButton("Prev", "Play Previous Song" , button=>{
+        //    gotoPlaylist(-1);
+        //})
 
 
         UI.playButton = createButton("Pause", "Pause playback" ,button=>{
@@ -182,9 +183,10 @@ let Player = (()=>{
             }
         })
 
-        createButton("next", "Play Next Song",button=>{
-            gotoPlaylist(1);
-        })
+        // disable for now - let's re-enable when/if we have playlist support
+        //createButton("next", "Play Next Song",button=>{
+        //    gotoPlaylist(1);
+        //})
 
 
         let bLabel = window.opener ? "Pop In" : "Pop Out";
