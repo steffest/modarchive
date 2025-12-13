@@ -267,8 +267,7 @@ let Player = (()=>{
 
                 const filename = audioFile.name.split('/').pop();
                 UI.titleDisplay.innerHTML = filename;
-                songInfo.title = filename;
-                //songInfo.artist = data.artistName;
+                songInfo.filename = songInfo.title = filename;
 
                 // Extract the audio file as an array buffer
                 return audioFile.async('arraybuffer');
@@ -318,6 +317,11 @@ let Player = (()=>{
 
     function updateMetaInfo(){
         let meta = songInfo.meta || {};
+
+        if (meta.title){
+            UI.titleDisplay.innerHTML = meta.title;
+        }
+
         if (UI.infoRight){
             let info = [];
             if (meta.type_long) info.push(meta.type_long);
@@ -330,7 +334,13 @@ let Player = (()=>{
 
         if (UI.infoLeft){
             let info = [];
-            info.push("Artist: " + (meta.artist || songInfo.artist));
+            let artist = meta.artist || songInfo.artist;
+            if (artist){
+                info.push("Artist: " + artist);
+            }else{
+                info.push("File: " + songInfo.filename);
+            }
+
             info.push("Size: " + songInfo.fileSize + " KB");
             info.push("Playback: " +  songInfo.playback);
             UI.infoLeft.innerHTML = info.join("<br>");
