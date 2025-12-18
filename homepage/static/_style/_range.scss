@@ -1,0 +1,93 @@
+.range{
+  width: 100%;
+  position: relative;
+
+  .bar,
+  .progress{
+    background-color: #616161;
+    position: absolute;
+    height: 2px;
+    left: 0;
+    top: 7px;
+    right: 0;
+  }
+
+  .progress{
+    background-color: #7dd3bd;
+    top: 0;
+    width: 0;
+    right: unset;
+  }
+}
+
+input[type=range] {
+  width: 100%;
+  margin: 0;
+  background-color: transparent;
+  -webkit-appearance: none;
+  position: relative;
+  z-index: 1;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  background: transparent;
+  border: 0;
+  width: 100%;
+  height: 16px;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  margin-top: -0.15px;
+  width: 16px;
+  height: 16px;
+  background: #7dd3bd;
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+input[type=range]::-moz-range-track {
+  background: transparent;
+  border: 0;
+  width: 100%;
+  height: 16px;
+  cursor: pointer;
+}
+input[type=range]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #7dd3bd;
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  background: transparent;
+  border-color: transparent;
+  border-width: 3.65px 0;
+  color: transparent;
+  width: 100%;
+  height: 15.7px;
+  cursor: pointer;
+}
+input[type=range]::-ms-fill-lower {
+  background: transparent;
+  border: 0;
+}
+input[type=range]::-ms-fill-upper {
+  background: transparent;
+  border: 0;
+}
+input[type=range]::-ms-thumb {
+  width: 16px;
+  height: 16px;
+  background: #7dd3bd;
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 0px;
+  /*Needed to keep the Edge thumb centred*/
+}

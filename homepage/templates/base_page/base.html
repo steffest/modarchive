@@ -8,10 +8,16 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
         <link rel="stylesheet" href="{% static 'modarchive.css' %}">
+        <link rel="stylesheet" href="{% static '_style/main.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&family=Workbench&display=swap" rel="stylesheet">
         {% block extra_css %}{% endblock extra_css %}
-        
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
         {% block script %}
+            <script src="{% static '_script/main.js' %}" type="module"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
         {% endblock script %}
     </head>
     <body>
@@ -19,13 +25,16 @@
 
         <!-- Main content -->
         <div class="container-sm pt-2 bg-light rounded-bottom tma-standard">
+            <main>
             {% block content %}
             {% endblock %}
+            </main>
         
             <!-- Footer -->
             <div class="mt-4 mb-2 pb-2 disclaimer">
                 <em>This is a test page for the Mod Archive redesign, which is still under construction. Please be advised that not all functionality may be in place yet.</em>
             </div>
         </div>
+        <div id="player"></div>
     </body>
 </html>
