@@ -29,7 +29,7 @@
             "reply_to": 1,
             "reply_recipient": 1,
             "thread_starter": 1,
-            "text": "Did I mention that you are cool?"
+            "text": "Did I mention that you are cool? Also I like huxchx.it it is my favorite song"
         }
     },
     {
@@ -92,7 +92,7 @@
         "fields": {
             "profile": 3,
             "sender": 3,
-            "text": "Did you know you can post messages on your own profile? Check out this song: [modpage]42654[/modpage]"
+            "text": "Did you know you can post messages on your own profile? Check out this song: [[modpage:42654]]"
         }
     },
     {

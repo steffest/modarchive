@@ -1,5 +1,4 @@
 {% extends 'base_page/base.html' %}
-{% load markdownify %}
 {% load filters %}
 
 {% block title %}
@@ -22,12 +21,6 @@
 <div class='fs-2 title'>{{ artist.name }}</div>
 
 <hr>
-
-<div class="tab-content mx-3 mt-2" id="myTabContent">
-    {% if artist.profile.blurb %}
-        {{ artist.profile.blurb|markdownify:"profile"|modpage|safe }}
-    {% endif %}
-</div>
 
 {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 

@@ -14,6 +14,7 @@ class Command(BaseCommand):
             ('homepage', 'blacklisteddomain'),
             ('homepage', 'news'),
             ('homepage', 'profile'),
+            ('homepage', 'message'),
             ('artists', 'artist'),
             ('auth', 'group'),
             ('auth', 'user'),
@@ -23,6 +24,7 @@ class Command(BaseCommand):
             ('interactions', 'comment'),
             ('interactions', 'favorite'),
             ('homepage', 'profile'),
+            ('homepage', 'message'),
         ]
 
         artist_models = [
@@ -30,6 +32,7 @@ class Command(BaseCommand):
             ('interactions', 'favorite'),
             ('interactions', 'artistcomment'),
             ('homepage', 'profile'),
+            ('homepage', 'message'),
             ('artists', 'artist'),
         ]
 

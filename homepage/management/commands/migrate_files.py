@@ -149,7 +149,7 @@ class Command(BaseCommand):
             # Use iterator() to avoid loading all records into memory
             files_queryset = legacy_models.Files.objects.using('legacy').all().order_by('id')
             total = files_queryset.count()
-            
+
             print(f"Starting migrations of {total} files. This process will create all song and song_stats objects.")
 
             batch_size = 1000

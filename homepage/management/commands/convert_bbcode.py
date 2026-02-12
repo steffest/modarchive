@@ -39,7 +39,8 @@ class Command(BaseCommand):
             text = comment.text
             text = self.convert_bold(text)
             text = self.convert_italic(text)
-            # text = self.convert_modpage(text)
+            text = self.convert_strike(text)
+            text = self.convert_modpage(text)
 
             if counter % 1000 == 0:
                 print(f"Converted {counter} comments.")
@@ -59,8 +60,9 @@ class Command(BaseCommand):
             text = comment.text
             text = self.convert_bold(text)
             text = self.convert_italic(text)
+            text = self.convert_strike(text)
+            text = self.convert_modpage(text)
             text = self.convert_url(text)
-            # text = self.convert_modpage(text)
 
             if counter % 1000 == 0:
                 print(f"Converted {counter} comments.")
@@ -80,6 +82,8 @@ class Command(BaseCommand):
             text = message.text
             text = self.convert_bold(text)
             text = self.convert_italic(text)
+            text = self.convert_strike(text)
+            text = self.convert_modpage(text)
 
             if counter % 1000 == 0:
                 print(f"Converted {counter} messages.")
@@ -103,8 +107,9 @@ class Command(BaseCommand):
 
             text = self.convert_bold(text)
             text = self.convert_italic(text)
+            text = self.convert_strike(text)
             text = self.convert_url(text)
-            # text = self.convert_modpage(text)
+            text = self.convert_modpage(text)
             # text = self.convert_modlinks(text)
             text = self.convert_head(text)
             text = self.convert_hr(text)
@@ -121,6 +126,9 @@ class Command(BaseCommand):
 
     def convert_italic(self, text):
         return re.sub(r'\[i\](.*?)\[/i\]', r'*\1*', text, flags=re.IGNORECASE)
+    
+    def convert_strike(self, text):
+        return re.sub(r'\[s\](.*?)\[/s\]', r'~~\1~~', text, flags=re.IGNORECASE)
 
     def convert_head(self, text):
         return re.sub(r'\[head\](.*?)\[/head\]',r'### \1', text, flags=re.IGNORECASE)
@@ -131,21 +139,15 @@ class Command(BaseCommand):
     def convert_url(self, text):
         return re.sub(r'\[url=(.*?)\](.*?)\[/url\]', r'[\2](\1)', text, flags=re.IGNORECASE)
 
-    # def convert_modpage(self, text):
-    #     return re.sub(r'\[modpage\](\d+)\[/modpage\]', self.replace_modpage, text, flags=re.IGNORECASE)
+    def convert_modpage(self, text):
+        return re.sub(r'\[modpage\](\d+)\[/modpage\]', self.replace_modpage, text, flags=re.IGNORECASE)
 
     # def convert_modlinks(self, text):
     #     return re.sub(r'\[modlinks\](\d+)\[/modlinks\]', self.replace_modlinks, text, flags=re.IGNORECASE)
 
-    # def replace_modpage(self, match):
-    #     legacy_id = int(match.group(1))
-    #     try:
-    #         # Find the corresponding song with the legacy ID
-    #         song = Song.objects.get(legacy_id=legacy_id)
-    #         # Replace the [modpage] tag with the new song ID
-    #         return f'[modpage]{song.id}[/modpage]'
-    #     except Song.DoesNotExist:
-    #         return match.group(0)
+    def replace_modpage(self, match):
+        id = int(match.group(1))
+        return f'[[modpage:{id}]]'
 
     # def replace_modlinks(self, match):
     #     legacy_id = int(match.group(1))

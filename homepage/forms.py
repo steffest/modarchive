@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.forms.widgets import EmailInput
 # from sceneid.forms import UserCreationForm as BaseUserCreationForm
 
-from homepage.models import Profile, BlacklistedDomain
+from homepage import models
 from homepage.fields import BlacklistProtectedEmailField
 
 class LoginForm(AuthenticationForm):
@@ -51,14 +51,14 @@ class CsvUploadForm(forms.Form):
 
 class UpdateProfileForm(forms.ModelForm):
     class Meta:
-        model = Profile
+        model = models.Profile
         fields = ("website", "blurb",)
 
 class AccountSettingsForm(forms.ModelForm):
     email = forms.EmailField(required=True, label="Account email")
 
     class Meta:
-        model = Profile
+        model = models.Profile
         fields = ("email", "enable_notifications", "enable_shoutwall", "enable_shoutwall_notifications")
     
     def __init__(self, *args, **kwargs):
@@ -82,7 +82,7 @@ class AccountSettingsForm(forms.ModelForm):
 
         # Must not be from a blacklisted domain
         domain = email.split("@")[-1]
-        if BlacklistedDomain.objects.filter(domain__iexact=domain).exists():
+        if models.BlacklistedDomain.objects.filter(domain__iexact=domain).exists():
             raise forms.ValidationError("Email addresses from this domain are not allowed.")
 
         return email
@@ -99,6 +99,14 @@ class AccountSettingsForm(forms.ModelForm):
             self.user.save(update_fields=["email"])
 
         return profile
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = models.Message
+        fields = ['text', 'reply_to']
+        widgets = {
+            'reply_to': forms.HiddenInput()
+        }
 
 # class SceneIDUserCreationForm(BaseUserCreationForm):
 #     username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True, 'class': 'form-control', 'placeholder': 'Username'}))

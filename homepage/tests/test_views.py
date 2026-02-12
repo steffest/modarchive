@@ -6,12 +6,15 @@ from django.test import TestCase
 from django.urls.base import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from django.contrib.messages import get_messages
+from django.contrib.auth.models import Permission
 
 from homepage.tokens import account_activation_token
 from homepage.tests import factories
 from artists import factories as artist_factories
 from songs import factories as song_factories
 from interactions import factories as interaction_factories
+from homepage import models
 
 User = get_user_model()
 
@@ -794,3 +797,128 @@ class FrontPageViewTests(TestCase):
         self.assertEqual(5, len(response.context['latest_news']))
         self.assertEqual("This is headline 6", response.context['latest_news'][0].headline)
         self.assertEqual("This is headline 2", response.context['latest_news'][4].headline)
+
+class CreateMessageView(TestCase):
+    def test_required_authentication(self):
+        # Arrange
+        user_0 = factories.UserFactory()
+        messages_url = reverse('create_message', kwargs = {'pk': user_0.profile.pk})
+        
+        # Act
+        response = self.client.post(messages_url, {'text': 'This is a message!'})
+
+        # Assert
+        self.assertRedirects(response, reverse('login') + '?next=' + messages_url)
+    
+    def test_posts_a_message(self):
+        # Arrange
+        user_1 = factories.UserFactory()
+        user_2 = factories.UserFactory()
+        permission = Permission.objects.get(codename='add_message')
+        user_1.user_permissions.add(permission)
+        self.client.force_login(user_1)
+
+        # Act
+        response = self.client.post(reverse('create_message', kwargs = {'pk': user_2.profile.pk}), {'text': 'This is a message!'})
+
+        # Assert
+        message = models.Message.objects.latest('id')
+        self.assertEqual(user_1.profile, message.sender)
+        self.assertEqual(user_2.profile, message.profile)
+        self.assertEqual('This is a message!', message.text)
+        self.assertIsNone(message.reply_to)
+        self.assertIsNone(message.reply_recipient)
+        self.assertIsNone(message.thread_starter)
+    
+    def test_posts_a_response_message(self):
+        # Arrange
+        user_0 = factories.UserFactory()
+        user_1 = factories.UserFactory()
+        permission = Permission.objects.get(codename='add_message')
+        user_0.user_permissions.add(permission)
+        self.client.force_login(user_0)
+        existing_message = factories.MessageFactory(profile=user_0.profile, sender=user_1.profile)
+
+        # Act
+        response = self.client.post(reverse('create_message', kwargs = {'pk': user_0.profile.pk}), {'text': 'This is a reply!', 'reply_to': existing_message.pk})
+
+        # Assert
+        message = models.Message.objects.latest('id')
+        self.assertEqual('This is a reply!', message.text)
+        self.assertEqual(user_0.profile, message.sender)
+        self.assertEqual(user_0.profile, message.profile)
+        self.assertEqual(existing_message, message.reply_to)
+        self.assertEqual(user_1.profile, message.reply_recipient)
+        self.assertEqual(existing_message, message.thread_starter)
+    
+    def test_posts_a_response_to_a_response_message(self):
+        # Arrange
+        user_0 = factories.UserFactory()
+        user_1 = factories.UserFactory()
+        permission = Permission.objects.get(codename='add_message')
+        user_1.user_permissions.add(permission)
+        self.client.force_login(user_1)
+        existing_message = factories.MessageFactory(profile=user_0.profile, sender=user_1.profile)
+        existing_response = factories.MessageFactory(profile=user_0.profile, sender=user_0.profile, reply_to=existing_message, reply_recipient=user_1.profile, thread_starter=existing_message)
+
+        # Act
+        response = self.client.post(reverse('create_message', kwargs = {'pk': user_0.profile.pk}), {'text': 'This is a reply to a reply!', 'reply_to': existing_response.pk})
+
+        # Assert
+        message = models.Message.objects.latest('id')
+        self.assertEqual('This is a reply to a reply!', message.text)
+        self.assertEqual(user_1.profile, message.sender)
+        self.assertEqual(user_0.profile, message.profile)
+        self.assertEqual(existing_response, message.reply_to)
+        self.assertEqual(user_0.profile, message.reply_recipient)
+        self.assertEqual(existing_message, message.thread_starter)
+    
+    def test_profile_must_agree_with_profile_of_responded_to_message(self):
+        # Arrange
+        user_0 = factories.UserFactory()
+        user_1 = factories.UserFactory()
+        permission = Permission.objects.get(codename='add_message')
+        user_0.user_permissions.add(permission)
+        self.client.force_login(user_0)
+        factories.MessageFactory(profile=user_0.profile, sender=user_1.profile)
+        other_message = factories.MessageFactory(profile=user_1.profile, sender=user_0.profile)
+
+        # Act
+        response = self.client.post(reverse('create_message', kwargs = {'pk': user_0.profile.pk}), {'text': 'This is a reply!', 'reply_to': other_message.pk})
+
+        # Assert
+        self.assertRedirects(response, reverse('view_profile_messages', kwargs={'pk': user_0.profile.pk}))
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(1, len(messages))
+        self.assertEqual('Message must be posted to the same profile as the message it responds to', str(messages[0]))
+    
+    def test_user_must_have_permission_to_post_message(self):
+        # Arrange
+        user_1 = factories.UserFactory()
+        user_2 = factories.UserFactory()
+        self.client.force_login(user_1)
+
+        # Act
+        response = self.client.post(reverse('create_message', kwargs = {'pk': user_2.profile.pk}), {'text': 'This is a message!'})
+
+        # Assert
+        self.assertEqual(403, response.status_code)
+    
+    def test_cannot_post_to_profile_with_shoutwall_disabled(self):
+        # Arrange
+        user_0 = factories.UserFactory()
+        user_1 = factories.UserFactory()
+        permission = Permission.objects.get(codename='add_message')
+        user_0.user_permissions.add(permission)
+        user_1.profile.enable_shoutwall = False
+        user_1.profile.save()
+        self.client.force_login(user_0)
+
+        # Act
+        response = self.client.post(reverse('create_message', kwargs = {'pk': user_1.profile.pk}), {'text': 'This is a message!'})
+
+        # Assert
+        self.assertRedirects(response, reverse('view_profile', kwargs={'pk': user_1.profile.pk}))
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(1, len(messages))
+        self.assertEqual('Cannot send message to user with messages disabled', str(messages[0]))
