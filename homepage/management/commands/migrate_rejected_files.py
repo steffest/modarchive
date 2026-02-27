@@ -18,6 +18,8 @@ class Command(BaseCommand):
 
         reasons_counter = {}
         other_reasons = []
+        batch_size = 1000
+        rejected_songs_batch = []
 
         for rejected_file in rejected_files:
             counter += 1
@@ -106,25 +108,48 @@ class Command(BaseCommand):
 
             reasons_counter[reason] = reasons_counter.get(reason, 0) + 1
 
-            RejectedSong.objects.create(
-                reason=reason,
-                message=message,
-                is_temporary=is_temporary,
-                rejected_by=filterer_profile,
-                rejected_date=date_rejected,
-                filename=rejected_file.filename,
-                filename_unzipped=rejected_file.filename,
-                title='',
-                format='',
-                file_size=None,
-                channels=None,
-                instrument_text='',
-                comment_text='',
-                hash=hash_code,
-                pattern_hash='',
-                artist_from_file='',
-                uploader_profile=uploader_profile,
-                uploader_ip_address='',
-                is_by_uploader=False,
-                create_date=date_rejected
+            rejected_songs_batch.append(
+                RejectedSong(
+                    reason=reason,
+                    message=message,
+                    is_temporary=is_temporary,
+                    rejected_by=filterer_profile,
+                    rejected_date=date_rejected,
+                    filename=rejected_file.filename,
+                    filename_unzipped=rejected_file.filename,
+                    title='',
+                    format='',
+                    file_size=None,
+                    channels=None,
+                    instrument_text='',
+                    comment_text='',
+                    hash=hash_code,
+                    pattern_hash='',
+                    artist_from_file='',
+                    uploader_profile=uploader_profile,
+                    uploader_ip_address='',
+                    is_by_uploader=False,
+                    create_date=date_rejected
+                )
             )
+
+            # Flush batch when reaching batch_size or end of loop
+            if len(rejected_songs_batch) >= batch_size:
+                RejectedSong.objects.bulk_create(rejected_songs_batch)
+                print(f"Inserted {counter} records out of {total}.")
+                rejected_songs_batch = []
+
+        # Flush remaining records in the batch
+        if rejected_songs_batch:
+            RejectedSong.objects.bulk_create(rejected_songs_batch)
+            print(f"Inserted final {len(rejected_songs_batch)} records.")
+
+        print(f"\nCompleted migration of {total} records.")
+        print("\nReason breakdown:")
+        for reason, count in sorted(reasons_counter.items()):
+            print(f"  {reason}: {count}")
+
+        if other_reasons:
+            print(f"\nFound {len(set(other_reasons))} unique 'other' reasons:")
+            for reason in sorted(set(other_reasons)):
+                print(f"  - {reason}")

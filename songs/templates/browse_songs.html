@@ -42,7 +42,7 @@
         <td><a href="{% url 'view_song' song.id %}">{{song.filename}}</a></td>
         <td>{{ song.get_title }}</td>
         <td>{% include 'song_artists.html' with song=song %}</td>
-        <td>{{ song.songstats.average_comment_score}}</td>
+        <td>{{ song.songstats.average_comment_score|default_if_none:"" }}</td>
     </tr>
 {% empty %}
     <div>No songs yet.</div>

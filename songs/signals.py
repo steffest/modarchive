@@ -24,6 +24,6 @@ def update_song_stats(song):
 
 def get_average_rating(song, total_comments):
     if total_comments == 0:
-        return 0.0
+        return None
 
     return sum(comment.rating for comment in song.comment_set.all()) / total_comments

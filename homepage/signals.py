@@ -8,5 +8,5 @@ User = get_user_model()
 
 @receiver(post_save, sender=User)
 def create_profile_after_activation(sender, instance, **kwargs):
-    if (instance.is_active and not hasattr(instance, 'profile')):
+    if instance.is_active and not hasattr(instance, 'profile'):
         Profile.objects.create(user = instance, display_name = instance.username)

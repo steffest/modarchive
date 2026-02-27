@@ -26,4 +26,4 @@ class CommentModelTests(TestCase):
         comment_1.delete()
 
         self.assertEqual(0, song.songstats.total_comments)
-        self.assertEqual(0.0, song.songstats.average_comment_score)
+        self.assertEqual(None, song.songstats.average_comment_score)

@@ -214,9 +214,9 @@ class SongStats(models.Model):
     )
     downloads=models.PositiveIntegerField(default=0)
     total_comments=models.PositiveSmallIntegerField(default=0)
-    average_comment_score=models.DecimalField(default=0.0, decimal_places=1, max_digits=3)
+    average_comment_score=models.DecimalField(default=0.0, decimal_places=1, max_digits=3, blank=True, null=True)
     total_reviews=models.PositiveSmallIntegerField(default=0)
-    average_review_score=models.DecimalField(default=0.0, decimal_places=1, max_digits=3)
+    average_review_score=models.DecimalField(default=0.0, decimal_places=1, max_digits=3, blank=True, null=True)
     total_favorites=models.PositiveIntegerField(default=0)
 
 class SongRedirect(models.Model):
