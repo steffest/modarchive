@@ -47,6 +47,7 @@ class Command(BaseCommand):
             ("migrate_redirects", {}),
             ("migrate_rejected_files", {}),
             ("migrate_messages", {}),
+            ("migrate_reviews", {}),
             # Optional/extra commands
             ("update_artist_search_indexes", {"all": True}),
             ("update_song_search_indexes", {"all": True}),

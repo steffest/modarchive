@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError, transaction
 
 from homepage import legacy_models
