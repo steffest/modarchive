@@ -6,24 +6,49 @@
 
 {% block content %}
 
-<div class="fs-2">Songs</div>
+<h1>Songs</h1>
 
-<p><a href="{% url 'random_song' %}">Go to a random song</a></p>
-
-<div>
+<nav class="subnav right">
+    <a href="{% url 'random_song' %}">Go to a random song</a>
     <a href="{% url 'browse_by_filename' 'a' %}">Browse by Filename</a>
-</div>
-
-<div>
     <a href="{% url 'browse_by_license' 'by' %}">Browse by License</a>
-</div>
-
-<div>
     <a href="{% url 'browse_by_genre' 'electronic-techno' %}">Browse by Genre</a>
-</div>
+    <a href="{% url 'browse_by_rating' 9 %}">Browse by Rating</a>
+</nav>
 
 <div>
-    <a href="{% url 'browse_by_rating' 9 %}">Browse by Rating</a>
+
+    <h2>Or perhaps enjoy some of these ...</h2>
+
+
+    <table class="songs">
+        <thead>
+        <tr>
+            <th>Filename</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Rating</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for song in songs %}
+        <tr>
+            <td>
+                <a class="button inline round player scriptEnabled" href="{% url 'player' %}?song_id={{song.id}}">Play</a>
+                <a href="{% url 'view_song' song.id %}"><i class="format {{song.get_format_display}}">{{song.get_format_display}}</i> {{song.filename}}</a>
+            </td>
+            <td>{{ song.get_title }}</td>
+            <td>{% include 'song_artists.html' with song=song %}</td>
+            <td>{{ song.songstats.average_comment_score|default_if_none:"" }}</td>
+        </tr>
+        {% empty %}
+        <div>No songs yet.</div>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
 </div>
 
 {% endblock %}

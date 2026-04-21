@@ -7,12 +7,15 @@
 
 {% block content %}
 
-<div class='fs-2'>Advanced Search</div>
+<h1>Advanced Search</h1>
 
-<form action="{% url 'advanced_search' %}" method="GET" value="{{request.GET.query}}" novalidate onsubmit="return window.formSubmit(this)">
+<form class="block" action="{% url 'advanced_search' %}" method="GET" value="{{request.GET.query}}" novalidate onsubmit="return window.formSubmit(this)">
     {% csrf_token %}
-    <div id="div_id_query" class="mb-3"> 
-        {{form.query}}
+    <div class="row">
+        <div id="div_id_query" class="mb-3">
+            <label for="id_query" class="form-label requiredField">Search for</label>
+            {{form.query}}
+        </div>
     </div>
     <div class="row">
         <div id="div_id_type" class="col mb-3">
@@ -55,28 +58,36 @@
     <input type="submit" class='btn btn-primary mt-2' value="Search">
 </form>
 
-<div class='fs-3'>Search Results</div>
+<h2>Search Results</h2>
 
-<table class="table table-striped" style="border: 0;">
+<table class="songs">
     <thead>
-        <tr>
-            <th>Filename</th>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Rating</th>
-        </tr>
+    <tr>
+        <th>Filename</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Rating</th>
+    </tr>
     </thead>
     <tbody>
-{% for song in search_results %}
+    {% for song in search_results %}
     <tr>
-        <td><a href="{% url 'view_song' song.id %}">{{song.filename}}</a></td>
+        <td>
+            <a class="button inline round player scriptEnabled" href="{% url 'player' %}?song_id={{song.id}}">Play</a>
+            <a href="{% url 'view_song' song.id %}"><i class="format {{song.get_format_display}}">{{song.get_format_display}}</i> {{song.filename}}</a>
+        </td>
         <td>{{ song.get_title }}</td>
         <td>{% include 'song_artists.html' with song=song %}</td>
         <td>{{ song.songstats.average_comment_score|default_if_none:"" }}</td>
     </tr>
-{% endfor %}
+    {% empty %}
+    <div>No songs yet.</div>
+    {% endfor %}
     </tbody>
 </table>
+
+
+
 
 {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 

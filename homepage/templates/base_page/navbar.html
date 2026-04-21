@@ -1,73 +1,62 @@
 {% comment %} {% load sceneid_tags %} {% endcomment %}
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}">The Mod Archive</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'songs' %}">Songs</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'artists' %}">Artists</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'advanced_search' %}">Advanced Search</a>
-                </li>
-                <li class="nav-item">
-                    <form action="{% url 'search' %}" method="GET" value="{{request.GET.query}}" onsubmit="return window.formSubmit(this)">
-                        <input name='query' class='form-control' placeholder="Quick Search" />
-                        <input name='songs' type='hidden' value='on' />
-                        <input name='artists' type='hidden' value='on' />
-                    </form>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                {% if user.is_authenticated %}
-                    {% if perms.uploads.can_upload_songs %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'upload_songs' %}">Upload Songs</a>
-                    </li>
-                    {% endif %}
-                    {% if perms.uploads.can_approve_songs %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'screening_index' %}">Screen Songs</a>
-                        </li>
-                    {% endif %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Logged in as: {{ user.username }}
-                        </a>
-                        <ul class="dropdown-menu">
-                            {% if user.profile %}
-                                <li><a class="dropdown-item" href="{% url 'view_profile' user.profile.id %}">View Profile</a></li>
-                                <li><a class="dropdown-item" href="{% url 'update_profile' %}">Update Profile</a></li>
-                                <li><a class="dropdown-item" href="{% url 'account_settings' %}">Account Settings</a></li>
-                                <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
-                            {% endif %}
-                            <li><a class="dropdown-item" href="{% url 'pending_uploads' %}">Pending Uploads</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="post" action="{% url 'logout' %}" style="margin: 0;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="dropdown-item" style="background: none; border: none; padding: 0; width: 100%; text-align: left;">
-                                        Log out
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                {% else  %}
-                    <li class="nav-item">
-                        <a class="btn btn-primary" href="{% url 'register' %}"><strong>Sign up</strong></a>
-                        <a class="btn btn-light" href="{% url 'login' %}?next={{request.path}}">Log in</a>
-                        {% comment %} {% sceneid_login_button_small %} {% endcomment %}
-                    </li>
+<header>
+    <div class="container">
+        <div class="logo"></div>
+        <a class="modarchive" href="{% url 'home' %}">The MOD Archive</a>
+    </div>
+</header>
+<nav class="main">
+    <div class="container">
+        <section class="subnav">
+            <a class="nav-link" href="{% url 'songs' %}">Songs</a>
+            <a class="nav-link" href="{% url 'artists' %}">Artists</a>
+            <a class="nav-link" href="{% url 'advanced_search' %}">Advanced Search</a>
+            <form action="{% url 'search' %}" method="GET" value="{{request.GET.query}}" onsubmit="return window.formSubmit(this)">
+                <input name='query' class='form-control' placeholder="Quick Search" />
+                <input name='songs' type='hidden' value='on' />
+                <input name='artists' type='hidden' value='on' />
+            </form>
+        </section>
+
+        <section class="subnav">
+            {% if user.is_authenticated %}
+                {% if perms.uploads.can_upload_songs %}
+                    <a class="nav-link" href="{% url 'upload_songs' %}">Upload Songs</a>
                 {% endif %}
-            </ul>
-        </div>
+                {% if perms.uploads.can_approve_songs %}
+                    <a class="nav-link" href="{% url 'screening_index' %}">Screen Songs</a>
+                {% endif %}
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Logged in as: {{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if user.profile %}
+                        <li><a class="dropdown-item" href="{% url 'view_profile' user.profile.id %}">View Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'update_profile' %}">Update Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'account_settings' %}">Account Settings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
+                        {% endif %}
+                        <li><a class="dropdown-item" href="{% url 'pending_uploads' %}">Pending Uploads</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item" style="background: none; border: none; padding: 0; width: 100%; text-align: left;">
+                                    Log out
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            {% else  %}
+                <a class="btn btn-primary" href="{% url 'register' %}"><strong>Sign up</strong></a>
+                <a class="btn btn-light" href="{% url 'login' %}?next={{request.path}}">Log in</a>
+                {% comment %} {% sceneid_login_button_small %} {% endcomment %}
+            {% endif %}
+        </section>
+
+
     </div>
 </nav>

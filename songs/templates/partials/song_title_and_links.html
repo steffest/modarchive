@@ -1,50 +1,45 @@
-{% load bootstrap_icons %}
+<div class="title">
+    <h1>
+        {{ song.get_title }}
+        {% if song.is_featured %}<i class="icon star"></i>{% endif %}
+    </h1>
+    <div class="meta">
+        <span>({{song.filename}})</span>
+        {% if perms.interactions.add_artistcomment and is_own_song %}
+        <a class="button" href="{% url 'song_details' song.id %}">Edit details</a>
+        {% endif %}
 
-<div class="">
-    <div class="row justify-content-between">
-        <div class="col-sm-6">
-            <span class="fs-4">
-                {% if song.is_featured %} {% bs_icon 'star-fill' %}{% endif %} 
-                {{ song.get_title }}
-            </span>
-            <span class="text-secondary fs-6">({{song.filename}})</span>
-            {% if perms.interactions.add_artistcomment and is_own_song %}
-                <a href="{% url 'song_details' song.id %}">{% bs_icon 'pencil' %} Edit details</a>
-            {% endif %}
-        </div>
         {% if song.artist_set.all %}
-        <div class="col-sm-4 text-sm-end fs-5">
-            {% include 'song_artists.html' with song=song %}
+            <div>
+                {% include 'song_artists.html' with song=song %}
+            </div>
+        {% endif %}
+
+        <div>
+            added on {{ song.create_date|date:"M d, Y" }}
         </div>
+    </div>
+</div>
+
+<div class="actions">
+    <div>
+        <a class="button big icon player scriptEnabled" href="{% url 'player' %}?song_id={{song.id}}">Listen</a>
+        <a class="button big icon download" href="{% url 'song_download' song.id %}">Download</a>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="col-sm-5 btn-group mb-1" role="group">
+        {% if perms.interactions.add_comment and can_comment %}
+        <a class="btn btn-outline-primary" href="{% url 'add_comment' song.id %}">Add comment</a>
+        {% endif %}
+
+        {% if not is_own_song %}
+        {% if perms.interactions.delete_favorite and is_favorite %}
+        <a class="btn btn-outline-primary" href="{% url 'remove_favorite' song.id %}">Remove song from favorites</a>
+        {% elif perms.interactions.add_favorite %}
+        <a class="btn btn-outline-primary" href="{% url 'add_favorite' song.id %}">Add song to favorites</a>
+        {% endif %}
         {% endif %}
     </div>
-    <div class="text-secondary mx-2 fst-italic">
-        added on {{ song.create_date|date:"M d, Y" }}
-    </div>
-
-    <div class="row justify-content-between">
-        <div class="col-sm my-1">
-            <a class="btn btn-success" href="{% url 'song_download' song.id %}">{% bs_icon 'download' %} Download</a>
-            <a class="btn btn-success scriptEnabled player" href="{% url 'player' %}?song_id={{song.id}}">{% bs_icon 'headphones' %} Listen</a>
-            <!--<a class="btn btn-success scriptEnabled player" href="#" onclick="window.open('{% url 'player' %}?song_id={{song.id}}', 'keep');">{% bs_icon 'headphones' %} Listen</button></a>-->
-        </div>
-
-        {% if user.is_authenticated %}
-        <div class="col-sm-5 btn-group mb-1" role="group">
-            {% if perms.interactions.add_comment and can_comment %}
-                <a class="btn btn-outline-primary" href="{% url 'add_comment' song.id %}">{% bs_icon 'chat-left-text' %} Add comment</a>
-            {% endif %}
-
-            {% if not is_own_song %}
-                {% if perms.interactions.delete_favorite and is_favorite %}
-                    <a class="btn btn-outline-primary" href="{% url 'remove_favorite' song.id %}">{% bs_icon 'heart-fill' %} Remove song from favorites</a>
-                {% elif perms.interactions.add_favorite %}
-                    <a class="btn btn-outline-primary" href="{% url 'add_favorite' song.id %}">{% bs_icon 'heart' %} Add song to favorites</a>
-                {% endif %}
-            {% endif %}
-        </div>
-        {% endif %}
-    </div>
-    
-    <hr>
+    {% endif %}
 </div>

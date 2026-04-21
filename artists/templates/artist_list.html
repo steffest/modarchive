@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<h2>Artists</h2>
+<h1>Artists</h1>
 
 {% if user.is_staff and perms.songs.change_song %}
     <div class="alert alert-warning" role="alert">
@@ -15,12 +15,19 @@
     </div>
 {% endif %}
 
-{% for artist in object_list %}
-    <div>
-        <a href="{% url 'view_artist' artist.id %}">{{ artist.name }}</a>
-    </div>
-{% empty %}
-    <div>No artists yet.</div>
-{% endfor %}
+<div class="artists">
+
+    {% for artist in object_list %}
+        <div class="artist">
+            <a href="{% url 'view_artist' artist.id %}">
+                <img src="{% if artist.image %}{{ artist.image.url }}{% else %}../static/_img/sound.svg{% endif %}" alt="{{ artist.name }}">
+                {{ artist.name }}
+            </a>
+        </div>
+    {% empty %}
+        <div>No artists yet.</div>
+    {% endfor %}
+
+</div>
 
 {% endblock %}

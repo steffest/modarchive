@@ -1,0 +1,27 @@
+.artists{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  img{
+    width: 120px;
+    height: 120px;
+    display: block;
+    border: 1px solid #515952;
+    transition: all 0.2s ease-in-out;
+  }
+
+  a{
+    color: #a4d3b4;
+    text-decoration: none;
+    margin: 6px;
+
+    &:hover{
+      img{
+        border: 1px solid #8ad78e;
+        box-shadow: 1px 1px 16px #1BC29A;
+      }
+    }
+  }
+
+}

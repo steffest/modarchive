@@ -1,0 +1,90 @@
+.button.big,
+button.big,
+.btn-primary{
+  display: inline-block;
+  border: 1px solid #1BC29A;
+  border-radius: 4px;
+  padding: 4px 10px;
+  text-decoration: none;
+  color: #1BC29A;
+  background-color: transparent;
+
+  &:hover{
+    color: #99daa6;
+    border-color: #99daa6;;
+    box-shadow: 0 0 8px #99daa6;
+    cursor: pointer;
+  }
+
+  &.icon{
+    padding-left: 30px;
+    background-image: url("../_img/play.svg");
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 8px center;
+
+    &.download{
+      background-image: url("../_img/download.svg");
+    }
+  }
+
+  &.scriptEnabled{
+    display: none;
+  }
+}
+
+a.button,
+button{
+  text-decoration: none;
+  border: 1px solid #666;
+  color: #ccc;
+  border-radius: 4px;
+  padding: 4px 10px;
+  outline: none;
+  font-size: 14px;
+
+  &:hover{
+    color: #fff;
+  }
+}
+
+
+button.inline.round,
+.button.inline.round{
+  color: transparent;
+  display: block;
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+  border: 1px solid #1BC29A;
+  border-radius: 50%;
+  background-image: url("../_img/play.svg");
+  background-size: 13px 13px;
+  background-repeat: no-repeat;
+  background-position: 5px 4px;
+  margin-right: 8px;
+  filter: saturate(0) brightness(0.7);
+
+  &:hover{
+    filter: saturate(1) drop-shadow(0 0 2px #90ddcb);
+  }
+
+  &.scriptEnabled{
+    display: none;
+  }
+}
+
+
+
+body.loaded{
+  .songs{
+    .button.inline.scriptEnabled{
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  a.button.big.scriptEnabled{
+    display: inline-block;
+  }
+}

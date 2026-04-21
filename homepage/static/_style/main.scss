@@ -5,6 +5,46 @@ html {
   box-sizing: inherit;
 }
 
+body{
+  background-color: #181818;
+  color: silver;
+  margin: 0;
+  padding: 0;
+  font-family: "Saira", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-size: 16px;
+  font-variation-settings: "wdth" 100;
+}
+
+h1{
+  font-weight: 100;
+  font-size: 2rem;
+  color: #a4b8b1;
+}
+
+h2{
+  font-weight: 100;
+  font-size: 1.5rem;
+  color: #6c9aa6;
+}
+
+.container{
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+}
+
+a{
+  color: white;
+}
+
+.flex{
+  display: flex;
+}
+
 .scriptEnabled{
   display: none;
 }
@@ -13,5 +53,15 @@ body.loaded .scriptEnabled{
   display: initial;
 }
 
+@import "colors";
+@import "icons";
+@import "header";
+@import "nav";
+@import "buttons";
 @import "player";
 @import "range";
+@import "songs";
+@import "artists";
+@import "form";
+@import "footer";
+@import "warning";

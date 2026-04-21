@@ -10,36 +10,50 @@
 {% endblock %}
 
 {% block content %}
-    {% if user.is_staff and perms.songs.change_song %}
-        <div class="alert alert-warning" role="alert">
-            <h4 class="alert-heading">Admin Actions</h4>
-            <ul>
-                <li>
-                    <a href="{% url 'admin:songs_song_change' song.id %}">Change this song</a>
-                </li>
-                <li>
-                    <a href="{% url 'admin:merge_song' song.id %}">Merge this song into another</a>
-                </li>
-            
-            </ul>
+    <div class="song">
+        {% if user.is_staff and perms.songs.change_song %}
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Admin Actions</h4>
+                <ul>
+                    <li>
+                        <a href="{% url 'admin:songs_song_change' song.id %}">Change this song</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'admin:merge_song' song.id %}">Merge this song into another</a>
+                    </li>
+
+                </ul>
+            </div>
+        {% endif %}
+
+        <!-- Song title and links -->
+        {% include "partials/song_title_and_links.html" %}
+
+        <div class="body">
+            <div>
+                <h2>Info</h2>
+                <!-- Song info and stats -->
+                {% include "partials/song_info_and_stats.html" %}
+
+                <!-- Artist comment -->
+                {% include "partials/song_artist_comments.html" %}
+
+                <br/>
+                {% include "partials/song_favorites.html" %}
+            </div>
+
+            <div class="internal">
+                <!-- Internal text -->
+                {% include "partials/song_internal_text.html" %}
+            </div>
+
         </div>
-    {% endif %}
 
-    <!-- Song title and links -->
-    {% include "partials/song_title_and_links.html" %}
-    
-    <!-- Song info and stats -->
-    {% include "partials/song_info_and_stats.html" %}
 
-    <!-- Artist comment -->
-    {% include "partials/song_artist_comments.html" %}
+        <!-- Legacy reviews -->
+        {% include "partials/song_legacy_reviews.html" %}
 
-    <!-- Internal text -->
-    {% include "partials/song_internal_text.html" %}
-
-    <!-- Legacy reviews -->
-    {% include "partials/song_legacy_reviews.html" %}
-
-    <!-- Other comments -->
-    {% include "partials/song_comments.html" %}
+        <!-- Other comments -->
+        {% include "partials/song_comments.html" %}
+    </div>
 {% endblock %}

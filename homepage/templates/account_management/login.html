@@ -9,7 +9,7 @@
 
 {% block content %}
 
-<div class='fs-2'>Log in</div>
+<h1>Log in</h1>
 
 <div>
     <form method="post" action="{% url 'login' %}" novalidate>
@@ -17,8 +17,8 @@
         
         {{ form|crispy }}
 
-        <div class="align-middle">
-            <input type="submit" value="Log In" class='btn btn-primary mt-2'>
+        <div>
+            <input type="submit" value="Log In" class='button big'>
             {% comment %} {% sceneid_login_button_large %} {% endcomment %}
         </div>
 
@@ -26,8 +26,10 @@
             <input type="hidden" name="next" value="{{ next }}">
         {% endif %}
     </form>
+
+    <br/>
     
-    <div class="is-size-7 is-italic"><a href="{% url 'forgot_password' %}">Forgot your password?</a></div>
+    <div class="small"><a href="{% url 'forgot_password' %}">Forgot your password?</a></div>
 </div>
 
 {% endblock %}    

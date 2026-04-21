@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<div class="fs-2">Songs</div>
+<h1>Songs</h1>
 
 
 <div class="form-group">
@@ -27,7 +27,7 @@
 
 {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 
-<table class="table table-striped" style="border: 0;">
+<table class="songs">
     <thead>
         <tr>
             <th>Filename</th>
@@ -39,7 +39,10 @@
     <tbody>
 {% for song in songs %}
     <tr>
-        <td><a href="{% url 'view_song' song.id %}">{{song.filename}}</a></td>
+        <td>
+            <a class="button inline round player scriptEnabled" href="{% url 'player' %}?song_id={{song.id}}">Play</a>
+            <a href="{% url 'view_song' song.id %}"><i class="format {{song.get_format_display}}">{{song.get_format_display}}</i> {{song.filename}}</a>
+        </td>
         <td>{{ song.get_title }}</td>
         <td>{% include 'song_artists.html' with song=song %}</td>
         <td>{{ song.songstats.average_comment_score|default_if_none:"" }}</td>

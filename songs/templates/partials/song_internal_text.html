@@ -1,31 +1,24 @@
 {% load filters %}
 
+{% comment %}
 {% if song.title_from_file and song.title_from_file != song.title %}
-    <div class="fs-5 my-1">
-        Original Title
-    </div>
-
+    <h2>Original Title</h2>
     <div class="text-warning bg-dark rounded px-3 py-1 font-monospace internal-comment">
         {{ song.title_from_file|spaces|escape }}
     </div>
 {% endif  %}
+{% endcomment %}
 
 {% if song.comment_text %}
-    <div class="fs-5 my-1">
-        Internal Comments
-    </div>
-    
-    <div class="text-warning bg-dark rounded p-3 font-monospace internal-comment">
+    <h2>Internal Comments</h2>
+    <div class="internal-text">
         {{ song.comment_text|hide_email_address|linebreaks|spaces|escape }}
     </div>
 {% endif %}
 
 {% if song.instrument_text %}
-    <div class="fs-5 my-1">
-        Instrument Text
-    </div>    
-
-    <div class="text-warning bg-dark rounded p-3 font-monospace internal-comment">
+    <h2>Instrument Text</h2>
+    <div class="internal-text">
         {{ song.instrument_text|hide_email_address|linebreaks|spaces|escape }}
     </div>
 {% endif %}

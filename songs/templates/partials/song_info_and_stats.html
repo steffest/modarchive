@@ -1,18 +1,18 @@
 {% load bootstrap_icons %}
-<div class="d-flex flex-wrap">
-    <div class="badge text-bg-secondary me-1 mb-1">{% bs_icon 'code-square' size='1.0em' %}{{song.get_format_display}}</div>
-    <div class="badge text-bg-secondary me-1 mb-1">{% bs_icon 'box2' size='1.0em' %}{{song.display_file_size}}</div>
-    <div class="badge text-bg-secondary me-1 mb-1">{% bs_icon 'layout-three-columns' size='1.0em' %}{{song.channels}} channels</div>
+<ul class="badges">
+    <li>{{song.get_format_display}}</li>
+    <li>{{song.display_file_size}}</li>
+    <li>{{song.channels}} channels</li>
     {% if song.genre %}
-        <div class="badge text-bg-primary bg-opacity-75 me-1 mb-1">{% bs_icon 'music-note-beamed' size='1.0em' %} {{ song.get_genre_display }}</div>
+        <li>{{ song.get_genre_display }}</li>
     {% endif %}
-    <div class="badge text-bg-success bg-opacity-75 me-1 mb-1">{% bs_icon 'download' size='1.0em' %}{{ stats.downloads }} downloads</div>
-    <div class="badge text-bg-success bg-opacity-75 me-1 mb-1">{% bs_icon 'heart-fill' size='1.0em' %}{{ stats.total_favorites }} favorites</div>
-    <div class="badge text-bg-success bg-opacity-75 me-1 mb-1">{% bs_icon 'chat-left-text' size='1.0em' %}{{ stats.total_comments }} comments</div>
+    <li>{{ stats.downloads }} downloads</li>
+    <li>{{ stats.total_favorites }} favorites</li>
+    <li>{{ stats.total_comments }} comments</li>
     {% if stats.average_comment_score > 0.0 %}
-        <div class="badge text-bg-success bg-opacity-75 mb-1">{% bs_icon 'star' size='1.0em' %}{{ stats.average_comment_score }} average rating</div>
+        <li>{{ stats.average_comment_score }} average rating</li>
     {% endif %}
-</div>
+</ul>
 {% if song.is_featured %}
     <div class="fst-italic text-secondary">
         This song was spotlit on {{ song.featured_date|date:"M d, Y" }}
