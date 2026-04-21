@@ -1,4 +1,4 @@
-{% load markdownify %}
+{% load markdown_extras %}
 {% load filters %}
 
 {% if song.comment_set.all %}
@@ -16,7 +16,7 @@
                     Rating: {{comment.rating}}/10
                 </div>
                 <br>
-                {{comment.text|markdownify:"comment"|modpage|safe}}
+                {{comment.text|render_markdown }}
             </div>
         {% endfor %}
     </div>

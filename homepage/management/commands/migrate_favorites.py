@@ -1,13 +1,69 @@
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError, transaction
-from django.db.models import F
-from collections import defaultdict
 
 from homepage import legacy_models
 from homepage.models import Profile
 from interactions.models import Favorite
 from songs.models import Song
 from .disable_signals import DisableSignals
+
+
+def bulk_create_batch(favorites_to_create):
+    """Bulk create favorites and update song favorite counts"""
+
+    with transaction.atomic():
+        try:
+            # Bulk create favorites
+            try:
+                created_favorites = Favorite.objects.bulk_create(favorites_to_create)
+                print(f"  Created {len(created_favorites)} favorites")
+            except Exception as favorite_error:
+                print(f"Bulk favorite creation failed: {favorite_error}")
+                # Fall back to individual creation
+                successful_favorites = 0
+                for favorite in favorites_to_create:
+                    try:
+                        Favorite.objects.create(
+                            profile_id=favorite.profile_id,
+                            song_id=favorite.song_id
+                        )
+                        successful_favorites += 1
+                    except IntegrityError as e:
+                        print(f"Failed to create favorite for profile {favorite.profile_id} and song {favorite.song_id}: {e}")
+                    except Exception as e:
+                        print(f"Unexpected error creating favorite: {e}")
+                print(f"  Created {successful_favorites} favorites individually")
+
+        except Exception as e:
+            print(f"Error during bulk creation: {str(e)}")
+            import traceback
+            traceback.print_exc()
+
+
+def build_valid_song_ids():
+    """Build a set of valid song IDs for efficient validation"""
+    print("Building valid song IDs set...")
+    valid_ids = set()
+
+    # Get all song IDs that exist
+    for song_id in Song.objects.values_list('id', flat=True).iterator(chunk_size=1000):
+        if song_id is not None:
+            valid_ids.add(song_id)
+
+    return valid_ids
+
+
+def build_valid_profile_ids():
+    """Build a set of valid profile IDs for efficient validation"""
+    print("Building valid profile IDs set...")
+    valid_ids = set()
+
+    # Get all profile IDs that exist
+    for profile_id in Profile.objects.values_list('id', flat=True).iterator(chunk_size=1000):
+        if profile_id is not None:
+            valid_ids.add(profile_id)
+
+    return valid_ids
 
 class Command(BaseCommand):
     help = "Migrate the legacy favorites table"
@@ -22,14 +78,13 @@ class Command(BaseCommand):
             print("Building validation lookup sets...")
             
             # Pre-build lookup sets for efficient validation (no foreign keys in legacy DB)
-            valid_profile_ids = self.build_valid_profile_ids()
-            valid_song_ids = self.build_valid_song_ids()
+            valid_profile_ids = build_valid_profile_ids()
+            valid_song_ids = build_valid_song_ids()
             
             print(f"Built validation sets: {len(valid_profile_ids)} profiles, {len(valid_song_ids)} songs")
             
             batch_size = 1000
             favorites_to_create = []
-            song_favorite_counts = defaultdict(int)  # song_id -> count increment
             
             counter = 0
             skipped_no_profile = 0
@@ -66,13 +121,12 @@ class Command(BaseCommand):
                 favorites_to_create.append(favorite)
                 
                 # Track favorite count increments for each song
-                song_favorite_counts[song_id] += 1
                 successful_favorites += 1
                 
                 # Bulk create when batch is full or at the end
                 if len(favorites_to_create) >= batch_size or counter == total:
                     if favorites_to_create:
-                        self.bulk_create_batch(favorites_to_create, song_favorite_counts)
+                        bulk_create_batch(favorites_to_create)
                     
                     if counter % 5000 == 0 or counter == total:
                         print(f"Processed {counter} out of {total} favorites. "
@@ -82,7 +136,6 @@ class Command(BaseCommand):
                     
                     # Clear batches
                     favorites_to_create = []
-                    song_favorite_counts = defaultdict(int)
             
             print(f"Migration complete! Processed {counter} favorites")
             print(f"  Successful favorites: {successful_favorites}")
@@ -93,104 +146,3 @@ class Command(BaseCommand):
             if counter > 0:
                 success_rate = (successful_favorites / counter) * 100
                 print(f"  Success rate: {success_rate:.1f}%")
-
-    def build_valid_profile_ids(self):
-        """Build a set of valid profile IDs for efficient validation"""
-        print("Building valid profile IDs set...")
-        valid_ids = set()
-        
-        # Get all profile IDs that exist
-        for profile_id in Profile.objects.values_list('id', flat=True).iterator(chunk_size=1000):
-            if profile_id is not None:
-                valid_ids.add(profile_id)
-        
-        return valid_ids
-
-    def build_valid_song_ids(self):
-        """Build a set of valid song IDs for efficient validation"""
-        print("Building valid song IDs set...")
-        valid_ids = set()
-        
-        # Get all song IDs that exist
-        for song_id in Song.objects.values_list('id', flat=True).iterator(chunk_size=1000):
-            if song_id is not None:
-                valid_ids.add(song_id)
-        
-        return valid_ids
-
-    def bulk_create_batch(self, favorites_to_create, song_favorite_counts):
-        """Bulk create favorites and update song favorite counts"""
-        
-        with transaction.atomic():
-            try:
-                # Bulk create favorites
-                try:
-                    created_favorites = Favorite.objects.bulk_create(favorites_to_create)
-                    print(f"  Created {len(created_favorites)} favorites")
-                except Exception as favorite_error:
-                    print(f"Bulk favorite creation failed: {favorite_error}")
-                    # Fall back to individual creation
-                    successful_favorites = 0
-                    for favorite in favorites_to_create:
-                        try:
-                            Favorite.objects.create(
-                                profile_id=favorite.profile_id,
-                                song_id=favorite.song_id
-                            )
-                            successful_favorites += 1
-                        except IntegrityError as e:
-                            print(f"Failed to create favorite for profile {favorite.profile_id} and song {favorite.song_id}: {e}")
-                        except Exception as e:
-                            print(f"Unexpected error creating favorite: {e}")
-                    print(f"  Created {successful_favorites} favorites individually")
-                
-                # Bulk update favorite counts for songs
-                if song_favorite_counts:
-                    self.bulk_update_favorite_counts(song_favorite_counts)
-                    
-            except Exception as e:
-                print(f"Error during bulk creation: {str(e)}")
-                import traceback
-                traceback.print_exc()
-
-    def bulk_update_favorite_counts(self, song_favorite_counts):
-        """Efficiently update favorite counts for songs"""
-        try:
-            updated_count = 0
-            failed_count = 0
-            
-            # Get all relevant songs and their stats
-            song_ids = list(song_favorite_counts.keys())
-            
-            # Update counts in batches to avoid large queries
-            batch_size = 100
-            for i in range(0, len(song_ids), batch_size):
-                batch_song_ids = song_ids[i:i + batch_size]
-                
-                try:
-                    # Update song stats for this batch
-                    for song_id in batch_song_ids:
-                        increment = song_favorite_counts[song_id]
-                        
-                        # Try to get the song and update its stats
-                        try:
-                            song = Song.objects.get(id=song_id)
-                            stats = song.get_stats()
-                            stats.total_favorites = F('total_favorites') + increment
-                            stats.save(update_fields=['total_favorites'])
-                            updated_count += 1
-                        except Exception as e:
-                            failed_count += 1
-                            if failed_count <= 5:  # Show first few failures
-                                print(f"Failed to update favorite count for song {song_id}: {e}")
-                
-                except Exception as batch_error:
-                    print(f"Error updating favorite counts for batch: {batch_error}")
-                    failed_count += len(batch_song_ids)
-            
-            print(f"  Updated favorite counts for {updated_count} songs")
-            if failed_count > 5:
-                print(f"  Failed to update counts for {failed_count} songs")
-                
-        except Exception as e:
-            print(f"Error in bulk_update_favorite_counts: {e}")

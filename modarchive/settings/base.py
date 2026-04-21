@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'songs',
     'uploads',
     # 'homepage.apps.DemositeSceneIDConfig',
-    'markdownify.apps.MarkdownifyConfig',
     'django_bootstrap_icons',
     "crispy_forms",
     "crispy_bootstrap5",
@@ -157,70 +156,6 @@ IS_RECAPTCHA_ENABLED = True
 SCENEID_CLIENT_ID='modarchive'
 SCENEID_CLIENT_SECRET=os.getenv("SCENEID_CLIENT_SECRET", "")
 LOGIN_REDIRECT_URL = '/'
-
-MARKDOWNIFY = {
-    "comment": {
-        "WHITELIST_TAGS": [
-            'em',
-            'strong',
-            'p',
-            'del'
-        ],
-        "MARKDOWN_EXTENSIONS": [
-            'pymdownx.tilde'
-        ]
-    },
-    "profile": {
-        "WHITELIST_TAGS": [
-            'em',
-            'strong',
-            'p',
-            'del',
-            'hr',
-            'h3',
-            'a',
-            'br'
-        ],
-        "WHITELIST_ATTRS": [
-            'href',
-        ],
-        "MARKDOWN_EXTENSIONS": [
-            'pymdownx.tilde'
-        ]
-    },
-    "artist_comment": {
-        "WHITELIST_TAGS": [
-            'em',
-            'strong',
-            'p',
-            'del',
-            'a',
-            'br'
-        ],
-        "WHITELIST_ATTRS": [
-            'href',
-        ],
-        "MARKDOWN_EXTENSIONS": [
-            'pymdownx.tilde'
-        ]
-    },
-    "message": {
-        "WHITELIST_TAGS": [
-            'em',
-            'strong',
-            'p',
-            'del',
-            'a',
-            'br'
-        ],
-        "WHITELIST_ATTRS": [
-            'href',
-        ],
-        "MARKDOWN_EXTENSIONS": [
-            'pymdownx.tilde'
-        ]
-    }
-}
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"

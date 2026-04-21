@@ -55,4 +55,4 @@ class Message(models.Model):
     update_date=models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
-        return f"Message(id={self.id}, sender={self.sender_id}, profile={self.profile_id})"
+        return f"id: {self.pk}, text: \"{self.text if len(self.text) < 30 else self.text[:30] + '...'}\", from: {self.sender_id}, to: {self.profile_id}"

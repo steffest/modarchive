@@ -1,5 +1,5 @@
 {% extends 'base_page/base.html' %}
-{% load markdownify %}
+{% load markdown_extras %}
 
 {% block title %}
     {{ block.super }}: Serving the Demoscene since 1996
@@ -24,7 +24,7 @@
             </div>
 
             <p>
-                {{ news.content|markdownify|linebreaks }}
+                {{ news.content|render_markdown }}
             </p>
 
             {% if user.is_staff and perms.homepage.change_news %}

@@ -10,6 +10,7 @@ from homepage.forms import UpdateProfileForm, AccountSettingsForm
 from homepage.views.common_views import PageNavigationListView
 
 from homepage.models import Profile, Message
+from homepage.forms import MessageForm
 from songs.models import Song
 from interactions import models as i_models
 
@@ -29,6 +30,7 @@ class ProfileView(DetailView):
         if profile and profile.enable_shoutwall:
             most_recent_messages = profile.profile_messages.order_by('-create_date')[:10]
             context['most_recent_messages'] = most_recent_messages
+            context['message_form'] = MessageForm()
     
         context['profile'] = profile
         context['artist'] = getattr(profile, 'artist', None)
@@ -106,7 +108,7 @@ class ProfileMessagesView(PageNavigationListView):
         response = super().get(request, *args, **kwargs)
 
         # If shoutwall is disabled, redirect to their main profile page
-        if (self.profile.enable_shoutwall == False):
+        if (not self.profile.enable_shoutwall):
             return redirect('view_profile', self.profile.pk)
 
         return response
@@ -114,6 +116,7 @@ class ProfileMessagesView(PageNavigationListView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['profile'] = self.profile
+        context_data['message_form'] = MessageForm()
         return context_data
 
     def get_queryset(self):

@@ -5,7 +5,7 @@ from django.views.generic.base import TemplateView
 from homepage.views import password_views, registration_views
 from homepage.views.homepage_views import LoginView, HomePageView
 from homepage.views.legacy_redirect_view import LegacyUrlRedirectionView
-from homepage.views import profile_views
+from homepage.views import profile_views, message_views
 
 urlpatterns = [
     # Basic homepage
@@ -41,6 +41,9 @@ urlpatterns = [
     path('profiles/<int:pk>/messages', profile_views.ProfileMessagesView.as_view(), {}, 'view_profile_messages'),
     path('profiles/update/', profile_views.UpdateProfileView.as_view(), {}, 'update_profile'),
     path('account_settings', profile_views.AccountSettingsView.as_view(), {}, 'account_settings'),
+
+    # Messages
+    path('profiles/<int:pk>/message', message_views.CreateMessageView.as_view(), {}, 'create_message'),
 ]
 
 handler404 = 'homepage.views.homepage_views.page_not_found_view'

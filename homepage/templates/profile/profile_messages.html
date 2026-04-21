@@ -1,5 +1,6 @@
 {% extends 'base_page/base.html' %}
-{% load markdownify %}
+{% load crispy_forms_filters %}
+{% load markdown_extras %}
 {% load filters %}
 
 {% block title %}
@@ -7,6 +8,20 @@
 {% endblock %}
 
 {% block content %}
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".reply-link").forEach(link => {
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+                const id = this.dataset.messageId;
+                document
+                    .getElementById(`reply-form-${id}`)
+                    .classList.toggle("d-none");
+            });
+        });
+    });
+    </script>    
+
     <div class="fs-2">
         Profile: {{ profile.display_name }}
     </div>
@@ -23,7 +38,26 @@
             <strong>{{ message.sender.display_name }}</strong>
             wrote on {{ message.create_date|date:"F j, o" }}:
         </div>
-        <p>{{ message.text|markdownify:"message"|modpage|safe }}</p>
+        <p>{{ message.text|render_markdown }}</p>
+        {% if user.is_authenticated and perms.homepage.add_message %}
+        <a href="#" class="reply-link" data-message-id="{{ message.id }}">
+            Reply
+        </a>
+
+        <div id="reply-form-{{ message.id }}" class="reply-form d-none mt-2">
+            <form method="post" action="{% url 'create_message' profile.id %}">
+                {% csrf_token %}
+                {{ message_form|crispy }}
+
+                <input type="hidden" name="reply_to" value="{{ message.id }}">
+                <input type="hidden" name="profile_id" value="{{ profile.id }}">
+
+                <button type="submit" class="btn btn-sm btn-primary mt-1">
+                    Post reply
+                </button>
+            </form>
+        </div>
+        {% endif %}
         </div>
 
         {% for reply in message.thread_replies %}
@@ -32,10 +66,49 @@
                 <strong>{{ reply.sender.display_name }}</strong>
                 replied on {{ reply.create_date|date:"F j, o" }}:
             </div>
-            <p>{{ reply.text|markdownify:"message"|modpage|safe }}</p>
+            <p>{{ reply.text|render_markdown }}</p>
+            {% if user.is_authenticated and perms.homepage.add_message %}
+            <a href="#" class="reply-link" data-message-id="{{ reply.id }}">
+                Reply
+            </a>
+
+            <div id="reply-form-{{ reply.id }}" class="reply-form d-none mt-2">
+                <form method="post" action="{% url 'create_message' profile.id %}">
+                    {% csrf_token %}
+                    {{ message_form|crispy }}
+
+                    <input type="hidden" name="reply_to" value="{{ reply.id }}">
+                    <input type="hidden" name="profile_id" value="{{ profile.id }}">
+
+                    <button type="submit" class="btn btn-sm btn-primary mt-1">
+                        Post reply
+                    </button>
+                </form>
+            </div>
+            {% endif %}
         </div>
         {% endfor %}
     {% empty %}
         Nothing here
     {% endfor %}
+
+    {% if profile.enable_shoutwall and perms.homepage.add_message %}
+        <hr>
+
+        <div class="mx-4 my-3">
+            <h5>Post a message</h5>
+
+            <form method="post" action="{% url 'create_message' profile.id %}">
+                {% csrf_token %}
+                {{ message_form|crispy }}
+
+                <!-- empty reply_to = top-level message -->
+                <input type="hidden" name="profile_id" value="{{ profile.id }}">
+
+                <button type="submit" class="btn btn-success mt-2">
+                    Post message
+                </button>
+            </form>
+        </div>
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,82 @@
+{% load markdown_extras %}
+{% load filters %}
+
+{% if legacy_reviews %}
+    <div class="mt-1">
+        <div class="fs-5">Reviews</div>
+        {% for review in legacy_reviews %}
+            <div class="bg-success bg-opacity-25 border border-dark rounded p-2 my-2">
+                <!-- Header with rating and toggle link -->
+                <div class="fw-bold">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            Posted by <a href="{% url 'view_profile' review.profile.id %}">{{ review.profile.display_name }}</a> on {{ review.create_date|date:"F j, o" }}
+                            <br>
+                            Overall Rating: {{ review.impression_score }}/10
+                        </div>
+                        <button class="btn btn-sm btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#review-{{ review.id }}" aria-expanded="false" aria-controls="review-{{ review.id }}">
+                            Click here to read the entire review
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Collapsible review details -->
+                <div class="collapse mt-3" id="review-{{ review.id }}">
+                    <div class="review-criteria">
+                        {% if review.impression_text or review.impression_score %}
+                            <div class="mb-3">
+                                <div class="fw-semibold text-primary">Impression: {{ review.impression_score }}/10</div>
+                                {% if review.impression_text %}
+                                    <div class="ps-3">{{ review.impression_text }}</div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if review.technique_text or review.technique_score %}
+                            <div class="mb-3">
+                                <div class="fw-semibold text-primary">Technique: {{ review.technique_score }}/10</div>
+                                {% if review.technique_text %}
+                                    <div class="ps-3">{{ review.technique_text }}</div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if review.development_text or review.development_score %}
+                            <div class="mb-3">
+                                <div class="fw-semibold text-primary">Development: {{ review.development_score }}/10</div>
+                                {% if review.development_text %}
+                                    <div class="ps-3">{{ review.development_text }}</div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if review.creativity_text or review.creativity_score %}
+                            <div class="mb-3">
+                                <div class="fw-semibold text-primary">Creativity: {{ review.creativity_score }}/10</div>
+                                {% if review.creativity_text %}
+                                    <div class="ps-3">{{ review.creativity_text }}</div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if review.enjoyment_text or review.enjoyment_score %}
+                            <div class="mb-3">
+                                <div class="fw-semibold text-primary">Enjoyment: {{ review.enjoyment_score }}/10</div>
+                                {% if review.enjoyment_text %}
+                                    <div class="ps-3">{{ review.enjoyment_text }}</div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if review.additional_text %}
+                            <div class="mb-3 mt-4 pt-2 border-top">
+                                <div class="fw-semibold text-primary">Additional Comments</div>
+                                <div class="ps-3">{{ review.additional_text }}</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

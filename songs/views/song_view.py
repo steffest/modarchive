@@ -28,4 +28,7 @@ class SongView(DetailView):
 
         context['stats'] = context['song'].get_stats()
 
+        # Filter legacy reviews to only show non-pending ones
+        context['legacy_reviews'] = context['song'].legacyreview_set.filter(pending=False)
+
         return context

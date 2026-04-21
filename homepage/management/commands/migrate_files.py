@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from django.db import transaction
+from django.db import transaction, connection
 
 from homepage import legacy_models
 from songs.models import Song, SongStats
@@ -149,7 +149,7 @@ class Command(BaseCommand):
             # Use iterator() to avoid loading all records into memory
             files_queryset = legacy_models.Files.objects.using('legacy').all().order_by('id')
             total = files_queryset.count()
-            
+
             print(f"Starting migrations of {total} files. This process will create all song and song_stats objects.")
 
             batch_size = 1000
@@ -183,6 +183,9 @@ class Command(BaseCommand):
                     # Clear batches
                     songs_to_create = []
                     stats_to_create = []
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT setval(pg_get_serial_sequence('songs_song', 'id'), (SELECT MAX(id) FROM songs_song))")
 
     def prepare_song_data(self, legacy_file):
         # Generate song data
@@ -228,8 +231,8 @@ class Command(BaseCommand):
     def get_genre(self, genre_id):
         return self._genre_mapping.get(genre_id, None)
 
-    def get_format(self, format):
-        return self._format_mapping.get(format, None)
+    def get_format(self, song_format):
+        return self._format_mapping.get(song_format, None)
 
-    def get_license(self, license):
-        return self._license_mapping.get(license, '')
+    def get_license(self, song_license):
+        return self._license_mapping.get(song_license, '')
