@@ -1,0 +1,58 @@
+.dropdown{
+  position: relative;
+
+  menu{
+    position: absolute;
+    display: none;
+    list-style: none;
+    background-color: black;
+    border: 1px solid $border-dim-color;
+    border-radius: 6px;
+    z-index: 10;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+
+    &.active{
+      display: block;
+    }
+
+    li{
+        display: block;
+
+      &:last-child a{
+        border-bottom: none;
+      }
+    }
+
+    a{
+      display: block;
+      border: none;
+      border-bottom: 1px solid $border-dim-color;
+      white-space: nowrap;
+      border-radius: 0;
+      margin: 0;
+      padding: 6px 10px;
+    }
+
+    form{
+      display: block;
+    }
+
+    button{
+      display: block;
+      width: 100%;
+      border: none;
+      background-color: transparent;
+      color: $nav-link-color;
+      font-size: 14px;
+      text-align: left;
+      padding: 6px 10px;
+
+      &:hover{
+        color: $nav-link-hover-color;
+        cursor: pointer;
+      }
+    }
+  }
+}

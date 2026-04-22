@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block content %}
-    <div class="fs-2">
+    <h1>
         Profile: {{ profile.display_name }}
-    </div>
+    </h1>
 
     {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='favorites' %}
     

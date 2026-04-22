@@ -46,6 +46,16 @@ button{
   &:hover{
     color: #fff;
   }
+
+  &.nav{
+    border-color: $border-color;
+    color: $nav-link-color;
+
+    &:hover{
+      border-color: $border-hover-color;
+      color: $nav-link-hover-color;
+    }
+  }
 }
 
 

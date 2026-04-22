@@ -25,21 +25,20 @@
     <div>
         <a class="button big icon player scriptEnabled" href="{% url 'player' %}?song_id={{song.id}}">Listen</a>
         <a class="button big icon download" href="{% url 'song_download' song.id %}">Download</a>
-    </div>
 
-    {% if user.is_authenticated %}
-    <div class="col-sm-5 btn-group mb-1" role="group">
-        {% if perms.interactions.add_comment and can_comment %}
-        <a class="btn btn-outline-primary" href="{% url 'add_comment' song.id %}">Add comment</a>
+        {% if user.is_authenticated %}
+            {% if perms.interactions.add_comment and can_comment %}
+                <a class="button" href="{% url 'add_comment' song.id %}">Add comment</a>
+            {% endif %}
+
+            {% if not is_own_song %}
+                {% if perms.interactions.delete_favorite and is_favorite %}
+                    <a class="button" href="{% url 'remove_favorite' song.id %}">Remove song from favorites</a>
+                {% elif perms.interactions.add_favorite %}
+                    <a class="button" href="{% url 'add_favorite' song.id %}">Add song to favorites</a>
+                {% endif %}
+            {% endif %}
         {% endif %}
 
-        {% if not is_own_song %}
-        {% if perms.interactions.delete_favorite and is_favorite %}
-        <a class="btn btn-outline-primary" href="{% url 'remove_favorite' song.id %}">Remove song from favorites</a>
-        {% elif perms.interactions.add_favorite %}
-        <a class="btn btn-outline-primary" href="{% url 'add_favorite' song.id %}">Add song to favorites</a>
-        {% endif %}
-        {% endif %}
     </div>
-    {% endif %}
 </div>

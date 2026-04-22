@@ -7,7 +7,7 @@
 
 {% block content %}
     <div>
-        <div class="fs-2">Add comment to {{song.get_title}}</div>
+        <h1>Add comment to {{song.get_title}}</h1>
 
         <form action="{% url 'add_comment' song.id %}" method="post" novalidate>
             {% csrf_token %}
@@ -17,7 +17,7 @@
         </form>
     </div>
 
-    <div>
+    <div class="infobox">
         Markdown syntax:
         <br/>
         *italic*

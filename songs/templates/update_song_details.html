@@ -7,7 +7,7 @@
 
 {% block content %}
     <div>
-        <div class="fs-2">Update song details for {{object.get_title}}</div>
+        <h1>Update song details for {{object.get_title}}</h1>
 
         <form action="{% url 'song_details' object.id %}" method="post" novalidate>
             {% csrf_token %}

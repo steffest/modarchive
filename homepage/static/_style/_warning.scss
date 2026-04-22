@@ -11,3 +11,14 @@
     color: #a86a59;
   }
 }
+
+.fixed-alert{
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  padding: 4px 8px;
+  font-size: 10px;
+  z-index: 1000;
+}

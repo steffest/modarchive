@@ -6,6 +6,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener("click", (e) => {
         console.log("Document click:", e.target);
+
+        // detect out-of-menu clicks.
+        let inMenu = e.target.closest(".dropdown");
+        if (!inMenu){
+            let menus = document.querySelectorAll(".dropdown menu.active");
+            menus.forEach(menu => {
+                menu.classList.remove("active");
+            })
+        }
+
         if (e.target.classList.contains("scriptEnabled")) {
             e.preventDefault();
             e.stopPropagation();
@@ -27,6 +37,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         }else{
+
+            if (e.target.classList.contains("toggle-menu")) {
+                let dropdown = e.target.closest(".dropdown");
+                if (dropdown){
+                    let menu = dropdown.querySelector("menu");
+                    if (menu){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        menu.classList.toggle("active");
+                        return;
+                    }
+                }
+            }
+
+
             let isLink = e.target.tagName.toLowerCase() === "a" || e.target.closest("a");
             if (isLink){
                 let target = e.target.tagName.toLowerCase() === "a" ? e.target : e.target.closest("a");
@@ -49,6 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (playerElement && playerElement.classList.contains("standalone")) {
         Player.playSong();
+    }
+
+    // temporary display warning when on TEST set
+    if (window.location.hostname.includes("isgoingto.be")) {
+        let alert = document.createElement("div");
+        alert.classList.add("fixed-alert");
+        alert.textContent = "DEV version of TMA - limited data - preview only";
+        document.body.appendChild(alert);
     }
 })
 

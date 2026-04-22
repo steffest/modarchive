@@ -22,9 +22,9 @@
     });
     </script>    
 
-    <div class="fs-2">
+    <h1>
         Profile: {{ profile.display_name }}
-    </div>
+    </h1>
 
     {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='messages' %}
     
@@ -80,7 +80,7 @@
                     <input type="hidden" name="reply_to" value="{{ reply.id }}">
                     <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                    <button type="submit" class="btn btn-sm btn-primary mt-1">
+                    <button type="submit" class="button>
                         Post reply
                     </button>
                 </form>
@@ -105,7 +105,7 @@
                 <!-- empty reply_to = top-level message -->
                 <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                <button type="submit" class="btn btn-success mt-2">
+                <button type="submit" class="button">
                     Post message
                 </button>
             </form>

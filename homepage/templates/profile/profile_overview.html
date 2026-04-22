@@ -22,18 +22,16 @@
     });
     </script>
 
-    {% if user.profile and user.profile.id == profile.id %}
-        <a href="{% url 'update_profile' %}">Update your profile</a>
-        <br/><br/>
-    {% endif %}
-
-    <div class="fs-2">
+    <h1>
         Profile: {{ profile.display_name }}
-    </div>
+    </h1>
 
     {% include "profile/profile_header_and_navigation.html" with profile=profile artist=artist user=user active_tab='overview' %}
 
-    <hr>
+    {% if user.profile and user.profile.id == profile.id %}
+    <a href="{% url 'update_profile' %}" class="button btn-primary">Update your profile</a>
+    <br/>
+    {% endif %}
 
     <div class="tab-content mx-3 mt-2">
         {% if profile.blurb %}
@@ -98,7 +96,7 @@
                 <!-- empty reply_to = top-level message -->
                 <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                <button type="submit" class="btn btn-success mt-2">
+                <button type="submit" class="btn-primary">
                     Post message
                 </button>
             </form>

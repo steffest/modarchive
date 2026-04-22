@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="fs-2">Editing profile</div>
+    <h1>Editing profile</h1>
 
     <form action="{% url 'update_profile' %}" method="post" novalidate>
         {% csrf_token %}
@@ -14,7 +14,7 @@
         <input type="submit" class='btn btn-primary mt-2' value="Update Profile">
     </form>
 
-    <div>
+    <div class="infobox">
         Markdown syntax:
         <br/>
         *italic*

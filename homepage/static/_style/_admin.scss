@@ -1,0 +1,38 @@
+.adminpanel{
+  border: 1px solid $red-darker;
+  background-color: black;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 10px;
+
+  h4{
+    margin: 0;
+    background-color: $red-darker;
+    font-size: 16px;
+    font-weight: normal;
+    padding: 4px 10px;
+    color: $orange;
+  }
+
+  menu{
+    padding: 10px;
+    margin: 0;
+    list-style: none;
+    display: flex;
+
+    a{
+      font-size: 14px;
+      border: 1px solid #402020;
+      margin: 2px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      text-decoration: none;
+      color:#bd7c7c;
+
+      &:hover{
+        border-color: $red-dark;
+        color: $orange;
+      }
+    }
+  }
+}

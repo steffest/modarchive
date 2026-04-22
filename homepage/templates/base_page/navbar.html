@@ -18,7 +18,7 @@
             </form>
         </section>
 
-        <section class="subnav">
+        <section class="subnav flex">
             {% if user.is_authenticated %}
                 {% if perms.uploads.can_upload_songs %}
                     <a class="nav-link" href="{% url 'upload_songs' %}">Upload Songs</a>
@@ -27,29 +27,30 @@
                     <a class="nav-link" href="{% url 'screening_index' %}">Screen Songs</a>
                 {% endif %}
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Logged in as: {{ user.username }}
+                <div class="dropdown right">
+                    <a class="button nav toggle-menu" href="{% url 'view_profile' user.profile.id %}">
+                        <i class="icon user"></i>{{ user.username }}
                     </a>
-                    <ul class="dropdown-menu">
+                    <menu>
                         {% if user.profile %}
-                        <li><a class="dropdown-item" href="{% url 'view_profile' user.profile.id %}">View Profile</a></li>
-                        <li><a class="dropdown-item" href="{% url 'update_profile' %}">Update Profile</a></li>
-                        <li><a class="dropdown-item" href="{% url 'account_settings' %}">Account Settings</a></li>
-                        <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
+                        <li><a href="{% url 'view_profile' user.profile.id %}">View Profile</a></li>
+                        <li><a href="{% url 'update_profile' %}">Update Profile</a></li>
+                        <li><a href="{% url 'account_settings' %}">Account Settings</a></li>
+                        <li><a href="{% url 'change_password' %}">Change Password</a></li>
                         {% endif %}
+
                         <li><a class="dropdown-item" href="{% url 'pending_uploads' %}">Pending Uploads</a></li>
-                        <li><hr class="dropdown-divider"></li>
                         <li>
-                            <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+                            <form method="post" action="{% url 'logout' %}">
                                 {% csrf_token %}
-                                <button type="submit" class="dropdown-item" style="background: none; border: none; padding: 0; width: 100%; text-align: left;">
+                                <button type="submit" class="dropdown-item">
                                     Log out
                                 </button>
                             </form>
                         </li>
-                    </ul>
-                </li>
+                    </menu>
+                </div>
+
             {% else  %}
                 <a class="btn btn-primary" href="{% url 'register' %}"><strong>Sign up</strong></a>
                 <a class="btn btn-light" href="{% url 'login' %}?next={{request.path}}">Log in</a>

@@ -12,17 +12,16 @@
 {% block content %}
     <div class="song">
         {% if user.is_staff and perms.songs.change_song %}
-            <div class="alert alert-warning" role="alert">
-                <h4 class="alert-heading">Admin Actions</h4>
-                <ul>
+            <div class="adminpanel">
+                <h4>Admin Actions</h4>
+                <menu>
                     <li>
                         <a href="{% url 'admin:songs_song_change' song.id %}">Change this song</a>
                     </li>
                     <li>
                         <a href="{% url 'admin:merge_song' song.id %}">Merge this song into another</a>
                     </li>
-
-                </ul>
+                </menu>
             </div>
         {% endif %}
 

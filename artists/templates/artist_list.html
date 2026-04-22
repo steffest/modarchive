@@ -9,9 +9,13 @@
 <h1>Artists</h1>
 
 {% if user.is_staff and perms.songs.change_song %}
-    <div class="alert alert-warning" role="alert">
-        <h4 class="alert-heading">Admin Actions</h4>
-        <a href="{% url 'admin:artists_artist_add' %}">Add an artist</a>
+    <div class="adminpanel">
+        <h4>Admin Actions</h4>
+        <menu>
+            <li>
+                <a href="{% url 'admin:artists_artist_add' %}">Add an artist</a>
+            </li>
+        </menu>
     </div>
 {% endif %}
 

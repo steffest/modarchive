@@ -9,4 +9,16 @@ i.icon{
   &.star{
     background-image: url("../_img/star.svg");
   }
+
+  &.user{
+    background-image: url("../_img/headphone.svg");
+  }
+}
+
+button,
+.button{
+  i.icon{
+    vertical-align: sub;
+    margin-right: 8px;
+  }
 }
