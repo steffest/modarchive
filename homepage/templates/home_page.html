@@ -7,9 +7,13 @@
 
 {% block content %}
     {% if user.is_staff and perms.homepage.add_news %}
-    <div class="alert alert-warning" role="alert">
-        <h4 class="alert-heading">Admin Actions</h4>
-        <a href="{% url 'admin:homepage_news_add' %}">Add a news item</a>
+    <div class="adminpanel">
+        <h4>Admin Actions</h4>
+        <menu>
+            <li>
+                <a href="{% url 'admin:homepage_news_add' %}">Add a news item</a>
+            </li>
+        </menu>
     </div>
     {% endif %}    
 
