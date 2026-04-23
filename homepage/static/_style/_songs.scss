@@ -28,7 +28,7 @@
     text-decoration: none;
 
     &:hover{
-      color: #1BC29A;
+      color: $link-hover-color;
     }
 
     &.title{
@@ -38,7 +38,7 @@
     &.artist{
       color: #e7b47c;
       &:hover{
-        color: #1BC29A;
+        color: $link-hover-color;
       }
       margin-left: 6px;
     }

@@ -16,12 +16,6 @@
     <div class="tab-content">
         {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 
-        <ul>
-            {% for song in songs %}
-            <li>
-                <a href="{% url 'view_song' song.id %}">{{ song.get_title }}</a>
-            </li>
-            {% empty %}<li>No songs yet.</li>{% endfor %}
-        </ul>        
+        {% include 'song_table.html' with songs=songs %}
     </div>
 {% endblock %}

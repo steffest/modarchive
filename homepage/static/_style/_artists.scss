@@ -19,7 +19,7 @@
     &:hover{
       img{
         border: 1px solid #8ad78e;
-        box-shadow: 1px 1px 16px #1BC29A;
+        box-shadow: 1px 1px 16px $link-hover-color;
       }
     }
   }

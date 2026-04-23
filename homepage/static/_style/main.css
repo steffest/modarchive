@@ -184,25 +184,34 @@ nav form input:focus {
   border-radius: 2px;
 }
 .subnav .buttongroup {
-  border: 1px solid #737373;
-  border-radius: 2px;
   font-size: 14px;
   padding: 2px 6px;
-  border-radius: 4px;
 }
 .subnav .buttongroup label {
   color: gray;
 }
 .subnav .buttongroup a {
-  border: none;
   margin: 0;
-  border-left: 1px solid gray;
+  border: 1px solid transparent;
+  position: relative;
+  background-color: transparent;
 }
-.subnav .buttongroup a:first-of-type {
-  border-left: none;
+.subnav .buttongroup a:before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  background-color: gray;
+}
+.subnav .buttongroup a:first-of-type:before {
+  display: none;
 }
 .subnav .buttongroup a:hover {
-  background-color: grey;
+  color: #1BC29A;
+  cursor: pointer;
+  border-bottom: 1px solid #215c5e;
 }
 
 @container navmain (max-width: 400px) {
@@ -319,15 +328,24 @@ body.loaded a.button.big.scriptEnabled {
   left: 0;
   right: 0;
   height: 130px;
+  min-height: 146px;
+  max-height: calc(100vh - 60px);
   border-top: 2px solid #14463a;
   color: silver;
   display: none;
 }
-#player.active {
-  display: flex;
-  justify-content: space-between;
+#player.resizing, #player.resizing * {
+  cursor: ns-resize !important;
+  user-select: none;
 }
-#player.active.standalone {
+#player.resizing-horizontal, #player.resizing-horizontal * {
+  cursor: ew-resize !important;
+  user-select: none;
+}
+#player.active {
+  display: block;
+}
+#player.active.standalone .playerpanel {
   display: block;
 }
 #player.active.standalone #visualizer {
@@ -335,9 +353,59 @@ body.loaded a.button.big.scriptEnabled {
   height: calc(100vw - 10px);
   margin-top: 10px;
 }
+#player.active.standalone .caption {
+  display: none;
+}
 #player.standalone {
   height: unset;
   top: 0;
+}
+#player .caption {
+  height: 16px;
+  width: 100%;
+  border-bottom: 1px #14463a solid;
+  user-select: none;
+}
+#player .caption .draghandle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 16px;
+  bottom: 0;
+}
+#player .caption .draghandle:hover {
+  cursor: ns-resize;
+}
+#player .caption .draghandle:hover:before {
+  display: block;
+}
+#player .caption .draghandle:before {
+  content: "";
+  position: absolute;
+  height: 2px;
+  left: 0;
+  right: -16px;
+  top: 0;
+  background-color: #215c5e;
+  display: none;
+}
+#player .caption .close {
+  z-index: 2;
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  height: 14px;
+  width: 14px;
+  margin: 0;
+}
+#player .playerpanel {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  top: 16px;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 #player #mainDisplay {
   height: 36px;
@@ -437,10 +505,39 @@ body.loaded a.button.big.scriptEnabled {
   right: 0;
   top: 82px;
 }
+#player button.close {
+  background-image: url("../_img/close.svg");
+}
 #player #playerButtons {
   display: flex;
   align-items: center;
   margin-top: 10px;
+}
+#player .resizebarvertical {
+  width: 8px;
+  position: absolute;
+  left: -6px;
+  top: 0;
+  bottom: 0;
+}
+#player .resizebarvertical:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #215c5e;
+  width: 2px;
+  display: none;
+}
+#player .resizebarvertical:hover {
+  cursor: ew-resize;
+}
+#player .resizebarvertical:hover:before {
+  display: block;
+}
+#player.resizing-horizontal .resizebarvertical:before {
+  display: block;
 }
 #player #visualizer {
   width: 300px;
@@ -499,13 +596,15 @@ body.loaded a.button.big.scriptEnabled {
   background: linear-gradient(0, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 100%);
   border-top: 1px solid #170e0e;
 }
+#player .panel {
+  position: relative;
+}
 #player .panel:nth-child(1) {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0 10px;
-  position: relative;
 }
 
 @media (max-width: 800px) {
@@ -526,9 +625,17 @@ body.loaded a.button.big.scriptEnabled {
   }
   #player {
     height: 260px;
+    min-height: 150px;
   }
   #player.active {
     display: block;
+  }
+  #player .panel:last-of-type {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 120px;
   }
   #player #visualizer {
     width: 100%;
@@ -577,7 +684,7 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 input[type=range]::-webkit-slider-thumb {
-  margin-top: -0.15px;
+  margin-top: -2px;
   width: 16px;
   height: 16px;
   background: #7dd3bd;

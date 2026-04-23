@@ -7,6 +7,7 @@ let Player = (()=>{
     let isLoading = false;
     let songBuf = false;
     let container;
+    let playerPanel;
     let player;
     let currentId;
     let UI = {
@@ -18,6 +19,14 @@ let Player = (()=>{
 
     // dummy playlist
     let playList = []
+    let resizeState = {
+        active: false,
+        mode: null,
+        startX: 0,
+        startY: 0,
+        startHeight: 0,
+        startWidth: 300
+    }
 
     me.init = function(id){
         console.log("Player.init()");
@@ -29,6 +38,11 @@ let Player = (()=>{
         const context = new AudioContext();
 
         container = document.getElementById("player");
+        window.addEventListener("resize", () => {
+            normalizeHeight();
+            normalizeVisualizerWidth();
+            syncMainBottomMargin();
+        });
         player = new ChiptuneJsPlayer(
             {
                 repeatCount: -1,
@@ -78,6 +92,27 @@ let Player = (()=>{
         player.onError((err) => {
             console.error(data)
         })
+
+
+        let caption = document.createElement("div");
+        caption.className = "caption";
+        container.appendChild(caption);
+
+        let dragHandle = document.createElement("div");
+        dragHandle.className = "draghandle";
+        caption.appendChild(dragHandle);
+
+
+        let closeButton = document.createElement("button");
+        closeButton.className = "close";
+        closeButton.onclick = () => {
+            me.close();
+        }
+        caption.appendChild(closeButton);
+
+        playerPanel = document.createElement("div");
+        playerPanel.className = "playerpanel";
+        container.appendChild(playerPanel);
 
         UI.panelLeft = createPanel();
         UI.panelRight = createPanel();
@@ -215,9 +250,13 @@ let Player = (()=>{
         }
         UI.panelLeft.appendChild(UI.infoButton);
 
+        let resizeBarVertical = document.createElement("div");
+        resizeBarVertical.className = "resizebarvertical";
+        UI.panelRight.appendChild(resizeBarVertical);
 
         let visualizer = document.createElement("div");
         visualizer.id = "visualizer";
+        UI.visualizer = visualizer;
         UI.panelRight.appendChild(visualizer);
 
         UI.patternView = document.createElement("div");
@@ -238,6 +277,74 @@ let Player = (()=>{
 
 
         container.classList.add("active");
+        normalizeHeight();
+        syncMainBottomMargin();
+    }
+
+    me.close = ()=>{
+        if (player) player.stop();
+        if (container) container.classList.remove("active");
+        me.syncLayout();
+    }
+
+    me.beginResize = function(startY){
+        if (!container || !container.classList.contains("active") || container.classList.contains("standalone")) {
+            return false;
+        }
+
+        resizeState.active = true;
+        resizeState.mode = "height";
+        resizeState.startY = startY;
+        resizeState.startHeight = container.offsetHeight || getMinHeight();
+        container.classList.add("resizing");
+        return true;
+    }
+
+    me.beginVisualizerResize = function(startX){
+        if (!canResizeVisualizer()) {
+            return false;
+        }
+
+        resizeState.active = true;
+        resizeState.mode = "visualizer";
+        resizeState.startX = startX;
+        resizeState.startWidth = getCurrentVisualizerWidth();
+        container.classList.add("resizing-horizontal");
+        return true;
+    }
+
+    me.resizeTo = function(clientX, clientY){
+        if (!resizeState.active || !container) return;
+
+        if (resizeState.mode === "height") {
+            let delta = resizeState.startY - clientY;
+            let nextHeight = clampHeight(resizeState.startHeight + delta);
+            container.style.height = nextHeight + "px";
+            syncMainBottomMargin();
+            return;
+        }
+
+        if (resizeState.mode === "visualizer" && UI.visualizer) {
+            let delta = resizeState.startX - clientX;
+            let nextWidth = clampVisualizerWidth(resizeState.startWidth + delta);
+            UI.visualizer.style.width = nextWidth + "px";
+        }
+    }
+
+    me.endResize = function(){
+        if (!resizeState.active || !container) return;
+        resizeState.active = false;
+        resizeState.mode = null;
+        container.classList.remove("resizing");
+        container.classList.remove("resizing-horizontal");
+        normalizeVisualizerWidth();
+        syncMainBottomMargin();
+    }
+
+    me.syncLayout = function(){
+        normalizeHeight();
+        normalizeVisualizerWidth();
+        syncMainBottomMargin();
     }
 
     me.playSong = (id)=>{
@@ -279,6 +386,7 @@ let Player = (()=>{
                 player.play(songBuf)
                 isLoading = false
                 if (container) container.classList.add("active");
+                me.syncLayout();
                 if (UI.playButton){
                     UI.playButton.classList.remove("active");
                     UI.playButton.innerText = "Pause";
@@ -307,6 +415,7 @@ let Player = (()=>{
         popup.document.title = "Mod Player";
         localStorage.setItem("player", "popup");
         if (container) container.classList.remove("active");
+        me.syncLayout();
 
         window.popIn = function(){
             if (popup && popup.close) popup.close();
@@ -367,7 +476,7 @@ let Player = (()=>{
     function createPanel() {
         let panel = document.createElement("div");
         panel.classList.add("panel");
-        container.appendChild(panel);
+        playerPanel.appendChild(panel);
         return panel;
     }
 
@@ -425,6 +534,110 @@ let Player = (()=>{
         function em(s){
             return '<em>' + s + '</em>';
         }
+    }
+
+
+    function getMinHeight(){
+        return 130;
+    }
+
+    function isCompactLayout(){
+        return window.matchMedia("(max-width: 640px)").matches;
+    }
+
+    function getMaxHeight(){
+        return Math.max(getMinHeight(), window.innerHeight - 60);
+    }
+
+    function clampHeight(height){
+        return Math.max(getMinHeight(), Math.min(getMaxHeight(), height));
+    }
+
+    function getMinVisualizerWidth(){
+        return 200;
+    }
+
+    function getDefaultVisualizerWidth(){
+        return 300;
+    }
+
+    function getMaxVisualizerWidth(){
+        let baseWidth = 0;
+
+        if (playerPanel) {
+            baseWidth = playerPanel.clientWidth;
+        } else if (container) {
+            baseWidth = container.clientWidth;
+        }
+
+        if (!baseWidth) {
+            baseWidth = window.innerWidth;
+        }
+
+        return Math.max(getMinVisualizerWidth(), baseWidth - 400);
+    }
+
+    function clampVisualizerWidth(width){
+        return Math.max(getMinVisualizerWidth(), Math.min(getMaxVisualizerWidth(), width));
+    }
+
+    function getCurrentVisualizerWidth(){
+        if (!UI.visualizer) return getDefaultVisualizerWidth();
+
+        let inlineWidth = UI.visualizer.style.width;
+        if (inlineWidth && inlineWidth.endsWith("px")) {
+            return parseFloat(inlineWidth);
+        }
+
+        return UI.visualizer.offsetWidth || getDefaultVisualizerWidth();
+    }
+
+    function canResizeVisualizer(){
+        return !!(
+            container
+            && container.classList.contains("active")
+            && !container.classList.contains("standalone")
+            && !isCompactLayout()
+            && UI.visualizer
+        );
+    }
+
+    function syncMainBottomMargin(){
+        let main = document.querySelector("main");
+        if (!main) return;
+
+        if (!container || !container.classList.contains("active") || container.classList.contains("standalone")) {
+            main.style.marginBottom = "";
+            return;
+        }
+
+        let currentHeight = container.offsetHeight || getMinHeight();
+        main.style.marginBottom = currentHeight + "px";
+    }
+
+    function normalizeHeight(){
+        if (!container || container.classList.contains("standalone")) return;
+        let nextHeight = clampHeight(container.offsetHeight || getMinHeight());
+        container.style.height = nextHeight + "px";
+    }
+
+    function normalizeVisualizerWidth(){
+        if (!UI.visualizer) return;
+
+        if (!container || container.classList.contains("standalone") || isCompactLayout()) {
+            UI.visualizer.style.width = "";
+            return;
+        }
+
+        if (!container.classList.contains("active")) {
+            if (!UI.visualizer.style.width) {
+                UI.visualizer.style.width = getDefaultVisualizerWidth() + "px";
+            }
+            return;
+        }
+
+        let nextWidth = clampVisualizerWidth(getCurrentVisualizerWidth() || getDefaultVisualizerWidth());
+        UI.visualizer.style.width = nextWidth + "px";
     }
 
 

@@ -18,6 +18,7 @@
     <div class="tab-content" id="myTabContent">
         <ul class='list-group'>
         <!-- Favorites tab -->
+
         {% for favorite in object_list %}
             <li><a href="{% url 'view_song' favorite.song_id %}">{{ favorite.song.get_title }}</a></li>
         {% empty %}

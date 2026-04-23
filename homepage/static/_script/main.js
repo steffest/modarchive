@@ -4,16 +4,20 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("loaded");
     let playerElement = document.getElementById("player");
 
+    const closeActiveDropdownMenus = () => {
+        let menus = document.querySelectorAll(".dropdown menu.active");
+        menus.forEach(menu => {
+            menu.classList.remove("active");
+        });
+    };
+
     document.addEventListener("click", (e) => {
         console.log("Document click:", e.target);
 
         // detect out-of-menu clicks.
         let inMenu = e.target.closest(".dropdown");
         if (!inMenu){
-            let menus = document.querySelectorAll(".dropdown menu.active");
-            menus.forEach(menu => {
-                menu.classList.remove("active");
-            })
+            closeActiveDropdownMenus();
         }
 
         if (e.target.classList.contains("scriptEnabled")) {
@@ -60,11 +64,38 @@ document.addEventListener("DOMContentLoaded", () => {
                     e.preventDefault();
                     e.stopPropagation();
                     let href = target.getAttribute("href");
+                    closeActiveDropdownMenus();
                     loadPage(href);
                 }
             }
         }
     })
+
+    document.addEventListener("mousedown", (e) => {
+        let caption = e.target.closest("#player .draghandle");
+        if (caption && Player.beginResize && Player.beginResize(e.clientY)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+
+        let resizeBarVertical = e.target.closest("#player .resizebarvertical");
+        if (resizeBarVertical && Player.beginVisualizerResize && Player.beginVisualizerResize(e.clientX)) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    });
+
+    document.addEventListener("mousemove", (e) => {
+        if (Player.resizeTo) Player.resizeTo(e.clientX, e.clientY);
+    });
+
+    const stopPlayerResize = () => {
+        if (Player.endResize) Player.endResize();
+    };
+
+    document.addEventListener("mouseup", stopPlayerResize);
+    window.addEventListener("blur", stopPlayerResize);
 
     // react to history changes
     window.addEventListener("popstate", (e) => {
@@ -74,6 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (playerElement && playerElement.classList.contains("standalone")) {
         Player.playSong();
+    }
+
+    if (playerElement && playerElement.classList.contains("active") && Player.syncLayout) {
+        Player.syncLayout();
     }
 
     // temporary display warning when on TEST set
@@ -101,6 +136,7 @@ function replaceMainContent(html){
     let targetContent = document.querySelector("main");
     if (mainContent && targetContent){
         targetContent.innerHTML = mainContent.innerHTML;
+        if (Player.syncLayout) Player.syncLayout();
     }
 }
 

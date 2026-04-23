@@ -5,21 +5,41 @@
   left: 0;
   right: 0;
   height: 130px;
+  min-height: 146px;
+  max-height: calc(100vh - 60px);
   border-top: 2px solid #14463a;
   color: silver;
   display: none;
 
+  &.resizing,
+  &.resizing *{
+    cursor: ns-resize !important;
+    user-select: none;
+  }
+
+  &.resizing-horizontal,
+  &.resizing-horizontal *{
+    cursor: ew-resize !important;
+    user-select: none;
+  }
+
   &.active{
-    display: flex;
-    justify-content: space-between;
+    display: block;
 
     &.standalone{
-      display: block;
+
+      .playerpanel{
+        display: block;
+      }
 
       #visualizer{
         width: 100%;
         height: calc( 100vw - 10px);
         margin-top: 10px;
+      }
+
+      .caption{
+        display: none;
       }
     }
   }
@@ -27,6 +47,59 @@
   &.standalone{
    height: unset;
    top: 0;
+  }
+
+  .caption{
+    height: 16px;
+    width: 100%;
+    border-bottom: 1px #14463a solid;
+    user-select: none;
+
+    .draghandle{
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 16px;
+      bottom: 0;
+
+      &:hover{
+        cursor: ns-resize;
+        &:before{
+          display: block;
+        }
+      }
+
+      &:before{
+        content: '';
+        position: absolute;
+        height: 2px;
+        left: 0;
+        right: -16px;
+        top: 0;
+        background-color: $border-hover-color;
+        display: none;
+      }
+    }
+
+    .close{
+      z-index: 2;
+      position: absolute;
+      right: 1px;
+      top: 1px;
+      height: 14px;
+      width: 14px;
+      margin: 0;
+    }
+  }
+
+  .playerpanel{
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 16px;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   #mainDisplay{
@@ -145,12 +218,49 @@
       right: 0;
       top: 82px;
     }
+
+    &.close{
+      background-image: url("../_img/close.svg");
+    }
   }
 
   #playerButtons{
     display: flex;
     align-items: center;
     margin-top: 10px;
+  }
+
+  .resizebarvertical{
+    width: 8px;
+    position: absolute;
+    left: -6px;
+    top: 0;
+    bottom: 0;
+
+    &:before{
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background-color: $border-hover-color;
+      width: 2px;
+      display: none;
+    }
+
+    &:hover{
+      cursor: ew-resize;
+
+      &:before{
+        display: block;
+      }
+    }
+  }
+
+  &.resizing-horizontal{
+    .resizebarvertical:before{
+      display: block;
+    }
   }
 
   #visualizer{
@@ -220,13 +330,16 @@
     }
   }
 
+  .panel{
+    position: relative;
+  }
+
   .panel:nth-child(1){
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 0 10px;
-    position: relative;
   }
 }
 
@@ -254,9 +367,18 @@
 
   #player{
     height: 260px;
+    min-height: 150px;
 
     &.active{
       display: block;
+    }
+
+    .panel:last-of-type{
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 120px;
     }
 
     #visualizer{
