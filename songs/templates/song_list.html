@@ -9,11 +9,18 @@
 <h1>Songs</h1>
 
 <nav class="subnav right">
-    <a href="{% url 'random_song' %}">Go to a random song</a>
-    <a href="{% url 'browse_by_filename' 'a' %}">Browse by Filename</a>
-    <a href="{% url 'browse_by_license' 'by' %}">Browse by License</a>
-    <a href="{% url 'browse_by_genre' 'electronic-techno' %}">Browse by Genre</a>
-    <a href="{% url 'browse_by_rating' 9 %}">Browse by Rating</a>
+    <div class="buttongroup">
+        <label>Browse by</label>
+        <a href="{% url 'browse_by_filename' 'a' %}">Filename</a>
+        <a href="{% url 'browse_by_license' 'by' %}">License</a>
+        <a href="{% url 'browse_by_genre' 'electronic-techno' %}">Genre</a>
+        <a href="{% url 'browse_by_rating' 9 %}">Rating</a>
+    </div>
+    <div class="buttongroup">
+        <label>Go to</label>
+        <a href="{% url 'random_song' %}">Random song</a>
+        <!--<a href="{% url 'random_song' %}">Charts</a>-->
+    </div>
 </nav>
 
 <div>
