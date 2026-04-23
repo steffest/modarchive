@@ -230,27 +230,26 @@
   }
 }
 
-// mobile styles
 @media (max-width: 800px) {
-#player{
-  #mainDisplay{
-    div{display: none;}
+
+  nav.main .container{
+    padding: 0;
   }
-  #volumePanel,
-  button.info{
-    display: none;
+
+  #player{
+    #mainDisplay{
+      div{display: none;}
+    }
+    #volumePanel,
+    button.info{
+      display: none;
+    }
   }
-}
 }
 
 @media (max-width: 640px) {
   main{
     padding-bottom: 270px;
-  }
-
-  header .modarchive{
-    width: 250px;
-    background-repeat: no-repeat;
   }
 
   #player{
@@ -264,15 +263,5 @@
       width: 100%;
       margin-top: 10px;
     }
-  }
-}
-
-@media (max-width: 420px) {
-  header .logo{
-    width: 68px;
-  }
-
-  header .modarchive{
-    left: 90px;
   }
 }

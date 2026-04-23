@@ -23,7 +23,7 @@
 
 <div class="actions">
     <div>
-        <a class="button big icon player scriptEnabled" href="{% url 'player' %}?song_id={{song.id}}">Listen</a>
+        <a class="button big icon player scriptEnabled" href="{% url 'player' %}?song_id={{song.id}}">Play</a>
         <a class="button big icon download" href="{% url 'song_download' song.id %}">Download</a>
 
         {% if user.is_authenticated %}

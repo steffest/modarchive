@@ -1,5 +1,6 @@
 .songs{
   margin: 10px 0;
+  width: 100%;
 
   td{
     padding: 2px 4px;
@@ -11,6 +12,13 @@
     font-weight: normal;
     text-align: left;
     padding: 2px 8px;
+  }
+
+  th.rating,
+  td.rating{
+    width: 80px;
+    white-space: nowrap;
+    text-align: right;
   }
 
   a{
@@ -32,6 +40,11 @@
       }
       margin-left: 6px;
     }
+
+    .filename{
+      max-width: 100%;
+      text-wrap: nowrap;
+    }
   }
 
   i.format{
@@ -41,9 +54,11 @@
     font-style: normal;
     text-align: center;
     width: 30px;
+    min-width: 30px;
     border: 1px solid $blue;
     color: $blue;
     vertical-align: middle;
+    margin-right: 4px;
 
     &.mod{
       border-color: $green;
@@ -67,12 +82,14 @@
 .song{
   .title{
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
 
     .meta{
       display: flex;
       gap: 5px;
+      margin-bottom: 10px;
     }
 
   }
@@ -114,6 +131,55 @@
       color: black;
       white-space: nowrap;
       font-size: 13px;
+    }
+  }
+}
+
+@container filename (max-width: 140px){
+  span{
+    display: none;
+  }
+}
+
+@media (max-width: 600px){
+  .song{
+    .body{
+      display: block;
+    }
+
+    .badges{
+      max-width: 100%;
+    }
+  }
+}
+
+@media (max-width: 800px){
+  .songs{
+    table-layout: fixed;
+
+    .file{
+      container-type: inline-size;
+      container-name: filename;
+    }
+
+    td:first-child{
+      max-width: 0;
+    }
+
+    .file a:not(.player){
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+      max-width: calc(100% - 40px);
+      vertical-align: middle;
+    }
+
+    .file .filename{
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
     }
   }
 }

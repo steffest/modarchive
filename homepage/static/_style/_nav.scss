@@ -6,6 +6,15 @@ nav{
     border-bottom: 1px solid $border-dim-color;
   }
 
+  .subnav{
+    flex-wrap: nowrap;
+    &.main{
+      width: 100%;
+      container-type: inline-size;
+      container-name: navmain;
+    }
+  }
+
   .container{
     display: flex;
     justify-content: space-between;
@@ -20,6 +29,8 @@ nav{
     color: $nav-link-color;
     border-radius: 4px;
     font-size: 14px;
+    text-wrap: nowrap;
+    background-color: black;
 
     &:hover{
       border: 1px solid $border-hover-color;
@@ -29,7 +40,8 @@ nav{
   }
 
   form{
-    display: inline-block;
+    flex: 1 1 100%;
+    width: 100%;
 
     input{
       background-color: black;
@@ -38,6 +50,11 @@ nav{
       padding: 8px 10px;
       border-radius: 4px;
       color: white;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      max-width: 200px;
+      min-width: 100px;
 
       &:focus{
         outline: none;
@@ -46,9 +63,11 @@ nav{
   }
 }
 
-
-
 .subnav{
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
   &.right{
     text-align: right;
     a{
@@ -59,5 +78,17 @@ nav{
       border: 1px solid #737373;
       border-radius: 2px;
     }
+  }
+}
+
+@container navmain (max-width: 400px) {
+  a.secondary{
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  nav.main .container{
+    padding: 0;
   }
 }

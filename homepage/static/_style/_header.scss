@@ -21,3 +21,20 @@ header{
     color: transparent;
   }
 }
+
+@media (max-width: 640px) {
+  header .modarchive{
+    width: 250px;
+    background-repeat: no-repeat;
+  }
+}
+
+@media (max-width: 420px) {
+  header .logo{
+    width: 68px;
+  }
+
+  header .modarchive{
+    left: 90px;
+  }
+}

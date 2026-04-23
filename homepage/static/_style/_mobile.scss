@@ -1,0 +1,31 @@
+.nomobile{
+  display: block;
+
+  &.inlineblock{
+    display: inline-block;
+  }
+
+  &.inline{
+    display: inline;
+  }
+}
+
+.onlymobile{
+  display: none;
+}
+
+@media (max-width: 640px) {
+    .nomobile,
+    .nomobile.inline,
+    .nomobile.inlineblock{
+        display: none;
+    }
+
+    .onlymobile{
+      display: block;
+    }
+}
+
+
+
+

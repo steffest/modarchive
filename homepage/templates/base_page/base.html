@@ -15,14 +15,14 @@
         -->
         <!-- and legacy -->
 
-        <link rel="stylesheet" href="{% static '_style/main.css' %}">
+        <link rel="stylesheet" href="{% static '_style/main.css' %}?v20260423">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&family=Workbench&display=swap" rel="stylesheet">
         {% block extra_css %}{% endblock extra_css %}
 
         {% block script %}
-            <script src="{% static '_script/main.js' %}" type="module"></script>
+            <script src="{% static '_script/main.js' %}?v20260423" type="module"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
         {% endblock script %}
     </head>

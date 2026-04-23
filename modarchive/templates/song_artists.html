@@ -1,5 +1,5 @@
 {% if song.artist_set.all %}
-    by {% for artist in song.artist_set.all %}
+<span class="nomobile inline">by</span> {% for artist in song.artist_set.all %}
         {% if not forloop.first %}{% if forloop.last %} and {% else %}, {% endif %}{% endif %}
         <a class="artist" href="{% url 'view_artist' artist.id %}">{{ artist.name }}</a>
     {% endfor %}

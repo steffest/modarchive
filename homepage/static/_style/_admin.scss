@@ -19,6 +19,7 @@
     margin: 0;
     list-style: none;
     display: flex;
+    flex-wrap: wrap;
 
     a{
       font-size: 14px;
@@ -28,6 +29,8 @@
       border-radius: 4px;
       text-decoration: none;
       color:#bd7c7c;
+      text-wrap: nowrap;
+      display: block;
 
       &:hover{
         border-color: $red-dark;

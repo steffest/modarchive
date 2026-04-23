@@ -9,7 +9,7 @@
  # Implementation details
 - The website is built using Django templates and views, with progressive enhancement provided by JavaScript.
 - UI elements that should NOT be visible when scripting is disabled are marked with the `scriptEnabled` CSS class. This class is hidden by default using CSS.  
-  An example of this is the "Listen" button on song pages.
+  An example of this is the "Play" button on song pages.
 - UI elements that need script-enabled (the player) are dynamically added to the page using JavaScript once the page has loaded.
 - The player is injected into a placeholder `<div>` with the id `player`. This placeholder is present in the HTML at all times, but is empty when scripting is disabled.
 - The allow the site to switch to a single-page application (SPA) mode when scripting is enabled, the main content of the page is wrapped in a `<main>` element. This allows JavaScript to easily replace only the content of this element when navigating to a new page via AJAX. this assumes that all pages use the same base template, including the navbar.

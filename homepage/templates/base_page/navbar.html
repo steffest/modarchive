@@ -7,10 +7,10 @@
 </header>
 <nav class="main">
     <div class="container">
-        <section class="subnav">
-            <a class="nav-link" href="{% url 'songs' %}">Songs</a>
-            <a class="nav-link" href="{% url 'artists' %}">Artists</a>
-            <a class="nav-link" href="{% url 'advanced_search' %}">Advanced Search</a>
+        <section class="subnav main">
+            <a href="{% url 'songs' %}">Songs</a>
+            <a href="{% url 'artists' %}">Artists</a>
+            <a class="secondary" href="{% url 'advanced_search' %}">Advanced Search</a>
             <form action="{% url 'search' %}" method="GET" value="{{request.GET.query}}" onsubmit="return window.formSubmit(this)">
                 <input name='query' class='form-control' placeholder="Quick Search" />
                 <input name='songs' type='hidden' value='on' />
@@ -18,13 +18,13 @@
             </form>
         </section>
 
-        <section class="subnav flex">
+        <section class="subnav">
             {% if user.is_authenticated %}
                 {% if perms.uploads.can_upload_songs %}
-                    <a class="nav-link" href="{% url 'upload_songs' %}">Upload Songs</a>
+                    <a href="{% url 'upload_songs' %}" class="nomobile">Upload Songs</a>
                 {% endif %}
                 {% if perms.uploads.can_approve_songs %}
-                    <a class="nav-link" href="{% url 'screening_index' %}">Screen Songs</a>
+                    <a href="{% url 'screening_index' %}" class="nomobile">Screen Songs</a>
                 {% endif %}
 
                 <div class="dropdown right">
@@ -33,13 +33,18 @@
                     </a>
                     <menu>
                         {% if user.profile %}
-                        <li><a href="{% url 'view_profile' user.profile.id %}">View Profile</a></li>
-                        <li><a href="{% url 'update_profile' %}">Update Profile</a></li>
-                        <li><a href="{% url 'account_settings' %}">Account Settings</a></li>
-                        <li><a href="{% url 'change_password' %}">Change Password</a></li>
+                            <li><a href="{% url 'view_profile' user.profile.id %}">View Profile</a></li>
+                            <li><a href="{% url 'update_profile' %}">Update Profile</a></li>
+                            <li><a href="{% url 'account_settings' %}">Account Settings</a></li>
+                            <li><a href="{% url 'change_password' %}">Change Password</a></li>
                         {% endif %}
-
-                        <li><a class="dropdown-item" href="{% url 'pending_uploads' %}">Pending Uploads</a></li>
+                        {% if perms.uploads.can_upload_songs %}
+                            <li class="onlymobile"><a href="{% url 'upload_songs' %}">Upload Songs</a></li>
+                        {% endif %}
+                        {% if perms.uploads.can_approve_songs %}
+                            <li class="onlymobile"><a href="{% url 'screening_index' %}">Screen Songs</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'pending_uploads' %}">Pending Uploads</a></li>
                         <li>
                             <form method="post" action="{% url 'logout' %}">
                                 {% csrf_token %}

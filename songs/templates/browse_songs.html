@@ -27,30 +27,6 @@
 
 {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 
-<table class="songs">
-    <thead>
-        <tr>
-            <th>Filename</th>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Rating</th>
-        </tr>
-    </thead>
-    <tbody>
-{% for song in songs %}
-    <tr>
-        <td>
-            <a class="button inline round player scriptEnabled" href="{% url 'player' %}?song_id={{song.id}}">Play</a>
-            <a href="{% url 'view_song' song.id %}"><i class="format {{song.get_format_display}}">{{song.get_format_display}}</i> {{song.filename}}</a>
-        </td>
-        <td>{{ song.get_title }}</td>
-        <td>{% include 'song_artists.html' with song=song %}</td>
-        <td>{{ song.songstats.average_comment_score|default_if_none:"" }}</td>
-    </tr>
-{% empty %}
-    <div>No songs yet.</div>
-{% endfor %}
-    </tbody>
-</table>
+{% include 'song_table.html' with songs=songs %}
 
 {% endblock %}

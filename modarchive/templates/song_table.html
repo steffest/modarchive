@@ -1,0 +1,31 @@
+<table class="songs">
+    <thead>
+    <tr>
+        <th><div class="file">File<span>name</span></div></th>
+        <th>Title</th>
+        {% if not hide_artist %}
+        <th>Author</th>
+        {% endif %}
+        <th class="rating">Rating</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for song in songs %}
+    <tr>
+        <td>
+            <div class="file">
+                <a class="button inline round player scriptEnabled" href="{% url 'player' %}?song_id={{song.id}}">Play</a>
+                <a href="{% url 'view_song' song.id %}"><i class="format {{song.get_format_display}}">{{song.get_format_display}}</i> <span class="filename">{{song.filename}}</span></a>
+            </div>
+        </td>
+        <td><a href="{% url 'view_song' song.id %}">{{ song.get_title }}</a></td>
+        {% if not hide_artist %}
+            <td>{% include 'song_artists.html' with song=song %}</td>
+        {% endif %}
+        <td class="rating">{{ song.songstats.average_comment_score|default_if_none:"" }}</td>
+    </tr>
+    {% empty %}
+    <div>No songs yet.</div>
+    {% endfor %}
+    </tbody>
+</table>

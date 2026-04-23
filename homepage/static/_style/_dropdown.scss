@@ -18,8 +18,6 @@
     }
 
     li{
-        display: block;
-
       &:last-child a{
         border-bottom: none;
       }
@@ -53,6 +51,12 @@
         color: $nav-link-hover-color;
         cursor: pointer;
       }
+    }
+  }
+
+  &.right{
+    menu{
+      right: 0;
     }
   }
 }
