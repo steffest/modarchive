@@ -27,8 +27,8 @@
     </h1>
 
     {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='messages' %}
-    
-    <hr>
+
+<div class="tab-panel purple">
 
     {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 
@@ -80,7 +80,7 @@
                     <input type="hidden" name="reply_to" value="{{ reply.id }}">
                     <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                    <button type="submit" class="button>
+                    <button type="submit" class="button btn-primary">
                         Post reply
                     </button>
                 </form>
@@ -105,10 +105,13 @@
                 <!-- empty reply_to = top-level message -->
                 <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                <button type="submit" class="button">
+                <button type="submit" class="button btn-primary">
                     Post message
                 </button>
             </form>
         </div>
     {% endif %}
+
+</div>
+
 {% endblock %}

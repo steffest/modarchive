@@ -24,7 +24,7 @@
     {% for artist in object_list %}
         <div class="artist">
             <a href="{% url 'view_artist' artist.id %}">
-                <img src="{% if artist.image %}{{ artist.image.url }}{% else %}../static/_img/sound.svg{% endif %}" alt="{{ artist.name }}">
+                <img src="{% include 'partials/artist_image_url.html' with artist=artist %}" alt="{{ artist.name }}">
                 {{ artist.name }}
             </a>
         </div>

@@ -10,10 +10,8 @@
     </h1>
 
     {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='songs' %}
-    
-    <hr>
 
-    <div class="tab-content">
+    <div class="tab-panel green">
         {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 
         {% include 'song_table.html' with songs=songs %}

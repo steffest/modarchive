@@ -13,24 +13,24 @@
 </p>
 {% endif %}
 
-<ul class="nav nav-pills">
-    <li class="nav-item">
-        <a class="nav-link {% if active_tab == 'overview' %}active{% endif %}" aria-current="page" href="{% url 'view_profile' profile.pk %}">Overview</a>
+<ul class="nav tabs">
+    <li>
+        <a class="blue {% if active_tab == 'overview' %}active{% endif %}" aria-current="page" href="{% url 'view_profile' profile.pk %}">Overview</a>
     </li>
     {% if artist %}
-        <li class="nav-item">
-            <a class="nav-link {% if active_tab == 'songs' %}active{% endif %}" href="{% url 'view_profile_songs' profile.pk %}">Songs</a>
+        <li>
+            <a class="green {% if active_tab == 'songs' %}active{% endif %}" href="{% url 'view_profile_songs' profile.pk %}">Songs</a>
         </li>
     {% endif %}
-    <li class="nav-item">
-        <a class="nav-link {% if active_tab == 'comments' %}active{% endif %}" href="{% url 'view_profile_comments' profile.pk %}">Comments</a>
+    <li>
+        <a class="orange {% if active_tab == 'comments' %}active{% endif %}" href="{% url 'view_profile_comments' profile.pk %}">Comments</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link {% if active_tab == 'favorites' %}active{% endif %}" href="{% url 'view_profile_favorites' profile.pk %}">Favorites</a>
+    <li>
+        <a class="yellow {% if active_tab == 'favorites' %}active{% endif %}" href="{% url 'view_profile_favorites' profile.pk %}">Favorites</a>
     </li>
     {% if profile.enable_shoutwall %}
-        <li class="nav-item">
-            <a class="nav-link {% if active_tab == 'messages' %}active{% endif %}" href="{% url 'view_profile_messages' profile.pk %}">Messages</a>
+        <li>
+            <a class="purple {% if active_tab == 'messages' %}active{% endif %}" href="{% url 'view_profile_messages' profile.pk %}">Messages</a>
         </li>
     {% endif %}
 </ul>

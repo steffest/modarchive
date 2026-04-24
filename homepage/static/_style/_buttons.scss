@@ -56,6 +56,11 @@ button{
       color: $nav-link-hover-color;
     }
   }
+
+  &.sidebutton.right{
+    position: absolute;
+    right: 0;
+  }
 }
 
 

@@ -10,12 +10,10 @@
     </h1>
 
     {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='favorites' %}
-    
-    <hr>
 
     {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 
-    <div class="tab-content" id="myTabContent">
+    <div class="tab-panel yellow" id="myTabContent">
         <ul class='list-group'>
         <!-- Favorites tab -->
 

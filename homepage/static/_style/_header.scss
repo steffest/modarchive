@@ -24,7 +24,8 @@ header{
 
 @media (max-width: 640px) {
   header .modarchive{
-    width: 250px;
+    width: 270px;
+    top: 52px;
     background-repeat: no-repeat;
   }
 }
@@ -35,6 +36,14 @@ header{
   }
 
   header .modarchive{
-    left: 90px;
+    left: unset;
+    right: 10px;
+  }
+}
+
+@media (max-width: 366px) {
+  header .logo{
+    position: absolute;
+    right: 281px;
   }
 }

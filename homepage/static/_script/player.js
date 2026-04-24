@@ -105,6 +105,7 @@ let Player = (()=>{
 
         let closeButton = document.createElement("button");
         closeButton.className = "close";
+        closeButton.title = "Close Player";
         closeButton.onclick = () => {
             me.close();
         }

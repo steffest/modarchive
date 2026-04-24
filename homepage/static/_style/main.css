@@ -99,7 +99,8 @@ header .modarchive {
 
 @media (max-width: 640px) {
   header .modarchive {
-    width: 250px;
+    width: 270px;
+    top: 52px;
     background-repeat: no-repeat;
   }
 }
@@ -108,7 +109,14 @@ header .modarchive {
     width: 68px;
   }
   header .modarchive {
-    left: 90px;
+    left: unset;
+    right: 10px;
+  }
+}
+@media (max-width: 366px) {
+  header .logo {
+    position: absolute;
+    right: 281px;
   }
 }
 nav.main {
@@ -286,6 +294,11 @@ a.button.nav:hover,
 button.nav:hover {
   border-color: #215c5e;
   color: #bdcfc8;
+}
+a.button.sidebutton.right,
+button.sidebutton.right {
+  position: absolute;
+  right: 0;
 }
 
 button.inline.round,
@@ -621,7 +634,7 @@ body.loaded a.button.big.scriptEnabled {
 }
 @media (max-width: 640px) {
   main {
-    padding-bottom: 270px;
+    padding-bottom: 70px;
   }
   #player {
     height: 260px;
@@ -793,6 +806,67 @@ input[type=range]::-ms-thumb {
   right: 0;
 }
 
+ul.tabs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+ul.tabs li a {
+  display: block;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-bottom: 2px solid transparent;
+  color: silver;
+}
+ul.tabs li a.active {
+  color: white;
+  border-bottom: 3px solid white;
+}
+ul.tabs li a.active.blue {
+  border-color: #66b9dc;
+  text-shadow: 0 1px 4px #66b9dc;
+}
+ul.tabs li a.active.green {
+  border-color: #6cae73;
+  text-shadow: 0 1px 4px #6cae73;
+}
+ul.tabs li a.active.orange {
+  border-color: #dc7f66;
+  text-shadow: 0 1px 4px #dc7f66;
+}
+ul.tabs li a.active.yellow {
+  border-color: #c6a75d;
+  text-shadow: 0 1px 4px #c6a75d;
+}
+ul.tabs li a.active.purple {
+  border-color: #bf27c8;
+  text-shadow: 0 1px 4px #bf27c8;
+}
+ul.tabs li a:hover {
+  color: white;
+  border-color: gray;
+}
+
+.tab-panel {
+  border-top: 1px solid silver;
+}
+.tab-panel.blue {
+  border-color: #66b9dc;
+}
+.tab-panel.green {
+  border-color: #6cae73;
+}
+.tab-panel.orange {
+  border-color: #dc7f66;
+}
+.tab-panel.yellow {
+  border-color: #c6a75d;
+}
+.tab-panel.purple {
+  border-color: #bf27c8;
+}
+
 .songs {
   margin: 10px 0;
   width: 100%;
@@ -840,12 +914,12 @@ input[type=range]::-ms-thumb {
 }
 .songs i.format {
   display: inline-block;
-  font-size: 10px;
+  font-size: 9px;
   text-transform: uppercase;
   font-style: normal;
   text-align: center;
-  width: 30px;
-  min-width: 30px;
+  width: 26px;
+  min-width: 26px;
   border: 1px solid #66b9dc;
   color: #66b9dc;
   vertical-align: middle;
@@ -944,6 +1018,12 @@ input[type=range]::-ms-thumb {
     overflow: hidden;
     text-overflow: ellipsis;
     vertical-align: middle;
+  }
+}
+@media (max-width: 460px) {
+  .songs th.rating,
+  .songs td.rating {
+    display: none;
   }
 }
 .artists {
