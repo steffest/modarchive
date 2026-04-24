@@ -28,14 +28,14 @@
 
     {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='messages' %}
 
-<div class="tab-panel purple">
+<div class="tab-panel purple messages">
 
     {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 
     {% for message in object_list %}
-        <div class="bg-success bg-opacity-25 border border-dark rounded p-1 mx-4 my-2">
-        <div>
-            <strong>{{ message.sender.display_name }}</strong>
+        <div class="message">
+        <div class="caption">
+            <a href="{% url 'view_profile' message.sender.pk %}">{{ message.sender.display_name }}</a>
             wrote on {{ message.create_date|date:"F j, o" }}:
         </div>
         <p>{{ message.text|render_markdown }}</p>

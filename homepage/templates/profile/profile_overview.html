@@ -31,7 +31,7 @@
 
     {% include "profile/profile_header_and_navigation.html" with profile=profile artist=artist user=user active_tab='overview' %}
 
-    <div class="tab-panel blue">
+    <div class="tab-panel blue messages">
         {% if profile.blurb %}
             {{ profile.blurb|render_markdown:"profile_blurbs" }}
         {% endif %}
@@ -40,8 +40,8 @@
 
 
             {% for message in most_recent_messages %}
-                <div class="bg-success bg-opacity-25 border border-dark rounded p-1 mx-4 my-2">
-                    <div><strong><a href="{% url 'view_profile' message.sender.pk %}">{{ message.sender.display_name }}</a></strong> wrote on {{message.create_date|date:"F j, o"}}:</div>
+                <div class="message">
+                    <div class="caption"><a href="{% url 'view_profile' message.sender.pk %}">{{ message.sender.display_name }}</a> wrote on {{message.create_date|date:"F j, o"}}:</div>
                     <p>{{ message.text|render_markdown }}</p>
                     {% if message.reply_recipient and message.reply_to %}
                         <div class="fs-6">
@@ -65,7 +65,7 @@
                             <input type="hidden" name="reply_to" value="{{ message.id }}">
                             <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                            <button type="submit" class="btn btn-sm btn-primary mt-1">
+                            <button type="submit" class="button btn-primary">
                                 Post reply
                             </button>
                         </form>

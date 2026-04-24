@@ -76,3 +76,10 @@ form{
   padding: 10px;
   margin: 10px 0;
 }
+
+.reply-form{
+  margin: 20px;
+  &.d-none{
+    display: none;
+  }
+}
