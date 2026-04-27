@@ -8,19 +8,6 @@
 {% endblock %}
 
 {% block content %}
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".reply-link").forEach(link => {
-            link.addEventListener("click", function (e) {
-                e.preventDefault();
-                const id = this.dataset.messageId;
-                document
-                    .getElementById(`reply-form-${id}`)
-                    .classList.toggle("d-none");
-            });
-        });
-    });
-    </script>
 
     {% if user.profile and user.profile.id == profile.id %}
         <a href="{% url 'update_profile' %}" class="button btn-primary sidebutton right">Update your profile</a>
@@ -53,21 +40,20 @@
                     {% endif %}
 
                     {% if user.is_authenticated and perms.homepage.add_message %}
-                    <a href="#" class="reply-link" data-message-id="{{ message.id }}">
-                        Reply
-                    </a>
-
-                    <div id="reply-form-{{ message.id }}" class="reply-form d-none mt-2">
+                    <div class="reply-form">
+                        <button class="small toggle-parent reply" data-target=".reply-form">Reply</button>
                         <form method="post" action="{% url 'create_message' profile.id %}">
+                            <h3>Post your reply</h3>
                             {% csrf_token %}
                             {{ message_form|crispy }}
 
                             <input type="hidden" name="reply_to" value="{{ message.id }}">
                             <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                            <button type="submit" class="button btn-primary">
-                                Post reply
-                            </button>
+                            <div class="buttons">
+                                <button type="submit" class="button btn-primary">Post reply</button>
+                                <button type="button" class="toggle-parent" data-target=".reply-form">Cancel</button>
+                            </div>
                         </form>
                     </div>
                     {% endif %}
@@ -79,8 +65,8 @@
 
         {% comment %} Post a message (non-reply) {% endcomment %}
         {% if profile.enable_shoutwall and user.is_authenticated and perms.homepage.add_message %}
-            <div>
-                <h5>Post a message</h5>
+            <div class="messagereply-form">
+                <h3>Post a message to the shoutwall</h3>
 
                 <form method="post" action="{% url 'create_message' profile.id %}">
                     {% csrf_token %}
@@ -89,9 +75,11 @@
                     <!-- empty reply_to = top-level message -->
                     <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                    <button type="submit" class="btn-primary">
-                        Post message
-                    </button>
+                    <div class="buttons">
+                        <button type="submit" class="btn-primary">
+                            Post message
+                        </button>
+                    </div>
                 </form>
             </div>
         {% endif %}

@@ -6,12 +6,20 @@ i.icon{
   background-position: center;
   background-size: contain;
 
+  &.bottom{
+    vertical-align: bottom;
+  }
+
   &.star{
     background-image: url("../_img/star.svg");
   }
 
   &.user{
     background-image: url("../_img/headphone.svg");
+  }
+
+  &.info{
+    background-image: url("../_img/info.svg");
   }
 }
 

@@ -42,9 +42,11 @@ button{
   padding: 4px 10px;
   outline: none;
   font-size: 14px;
+  background-color: transparent;
 
   &:hover{
     color: #fff;
+    cursor: pointer;
   }
 
   &.nav{
@@ -60,6 +62,11 @@ button{
   &.sidebutton.right{
     position: absolute;
     right: 0;
+  }
+
+  &.small{
+    font-size: 12px;
+    padding: 2px 6px;
   }
 }
 

@@ -62,11 +62,17 @@ i.icon {
   background-position: center;
   background-size: contain;
 }
+i.icon.bottom {
+  vertical-align: bottom;
+}
 i.icon.star {
   background-image: url("../_img/star.svg");
 }
 i.icon.user {
   background-image: url("../_img/headphone.svg");
+}
+i.icon.info {
+  background-image: url("../_img/info.svg");
 }
 
 button i.icon,
@@ -191,6 +197,9 @@ nav form input:focus {
   border: 1px solid #737373;
   border-radius: 2px;
 }
+.subnav.elevated {
+  margin-top: -30px;
+}
 .subnav .buttongroup {
   font-size: 14px;
   padding: 2px 6px;
@@ -280,10 +289,12 @@ button {
   padding: 4px 10px;
   outline: none;
   font-size: 14px;
+  background-color: transparent;
 }
 a.button:hover,
 button:hover {
   color: #fff;
+  cursor: pointer;
 }
 a.button.nav,
 button.nav {
@@ -299,6 +310,11 @@ a.button.sidebutton.right,
 button.sidebutton.right {
   position: absolute;
   right: 0;
+}
+a.button.small,
+button.small {
+  font-size: 12px;
+  padding: 2px 6px;
 }
 
 button.inline.round,
@@ -770,9 +786,6 @@ input[type=range]::-ms-thumb {
   margin: 0;
   overflow: hidden;
 }
-.dropdown menu.active {
-  display: block;
-}
 .dropdown menu li:last-child a {
   border-bottom: none;
 }
@@ -801,6 +814,9 @@ input[type=range]::-ms-thumb {
 .dropdown menu button:hover {
   color: #bdcfc8;
   cursor: pointer;
+}
+.dropdown.active menu {
+  display: block;
 }
 .dropdown.right menu {
   right: 0;
@@ -867,6 +883,36 @@ ul.tabs li a:hover {
   border-color: #bf27c8;
 }
 
+ul.pagination {
+  list-style: none;
+  margin: 10px 0;
+  padding: 0;
+  display: flex;
+}
+ul.pagination li {
+  padding: 0;
+  margin: 0;
+}
+ul.pagination li.active span.page-link {
+  border: 1px solid #215c5e;
+  color: #1BC29A;
+  background-color: #172828;
+  box-shadow: 0 0 6px #215c5e;
+}
+ul.pagination span.page-link,
+ul.pagination a.page-link {
+  font-size: 12px;
+  display: inline-block;
+  padding: 2px 4px;
+  min-width: 24px;
+  text-align: center;
+  border: 1px solid #11422b;
+  background-color: transparent;
+  border-radius: 3px;
+  margin: 2px;
+  color: #889c78;
+}
+
 .songs {
   margin: 10px 0;
   width: 100%;
@@ -901,12 +947,10 @@ ul.tabs li a:hover {
 }
 .songs a.artist {
   color: #e7b47c;
+  margin-left: 6px;
 }
 .songs a.artist:hover {
   color: #1BC29A;
-}
-.songs a.artist {
-  margin-left: 6px;
 }
 .songs a .filename {
   max-width: 100%;
@@ -981,6 +1025,12 @@ ul.tabs li a:hover {
   font-size: 13px;
 }
 
+.favourites {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
 @container filename (max-width: 140px) {
   span {
     display: none;
@@ -1048,45 +1098,163 @@ ul.tabs li a:hover {
   box-shadow: 1px 1px 16px #1BC29A;
 }
 
-.messages .message {
-  background-color: rgba(63, 133, 119, 0.2);
+.messages .message,
+.messages .comment,
+.messages .messagereply-form,
+.comments .message,
+.comments .comment,
+.comments .messagereply-form {
+  background: linear-gradient(0, rgb(32, 46, 43) 0%, rgb(24, 25, 24) 100%);
   border: 1px solid #3F8577;
-  margin: 7px 0;
+  margin: 7px 0 14px 0;
   border-radius: 4px;
   padding: 0 10px 10px 10px;
   position: relative;
   overflow: hidden;
+  font-size: 14px;
 }
-.messages .message .caption {
+.messages .message .caption,
+.messages .comment .caption,
+.messages .messagereply-form .caption,
+.comments .message .caption,
+.comments .comment .caption,
+.comments .messagereply-form .caption {
   margin: 0 -10px;
-  background-color: #3b534b;
+  background: linear-gradient(0, #3b534b 0%, #25302c 100%);
   padding: 4px 10px;
 }
-.messages .message .caption a {
+.messages .message .caption a,
+.messages .comment .caption a,
+.messages .messagereply-form .caption a,
+.comments .message .caption a,
+.comments .comment .caption a,
+.comments .messagereply-form .caption a {
   color: #a5cfc5;
 }
-.messages .message .reply-link {
-  display: inline-block;
-  text-decoration: none;
-  color: #7ac8b7;
-  border: 1px solid #7ac8b7;
-  padding: 2px 10px;
-  font-size: 14px;
-  border-radius: 4px;
+.messages .message .caption.flex,
+.messages .comment .caption.flex,
+.messages .messagereply-form .caption.flex,
+.comments .message .caption.flex,
+.comments .comment .caption.flex,
+.comments .messagereply-form .caption.flex {
+  justify-content: space-between;
+}
+.messages .message.reply,
+.messages .comment.reply,
+.messages .messagereply-form.reply,
+.comments .message.reply,
+.comments .comment.reply,
+.comments .messagereply-form.reply {
+  margin-left: 32px;
+}
+.messages .message .footer,
+.messages .comment .footer,
+.messages .messagereply-form .footer,
+.comments .message .footer,
+.comments .comment .footer,
+.comments .messagereply-form .footer {
+  font-size: 12px;
+  text-align: right;
+  margin-bottom: -6px;
+  color: #80978e;
+}
+.messages .reply-form button.reply,
+.messages .messagereply-form button.reply,
+.comments .reply-form button.reply,
+.comments .messagereply-form button.reply {
   position: absolute;
+  display: inline-block;
+  color: #7ac8b7;
+  border: 1px solid rgba(122, 200, 183, 0.5333333333);
+  padding: 1px 4px;
+  font-size: 12px;
+  border-radius: 4px;
   bottom: 4px;
   right: 4px;
+}
+.messages .reply-form button.reply:hover,
+.messages .messagereply-form button.reply:hover,
+.comments .reply-form button.reply:hover,
+.comments .messagereply-form button.reply:hover {
+  color: #b1cfc9;
+  border: 1px solid #b1cfc9;
+}
+.messages .reply-form form,
+.messages .messagereply-form form,
+.comments .reply-form form,
+.comments .messagereply-form form {
   display: none;
 }
-.messages .message:hover .reply-link {
+.messages .reply-form form label,
+.messages .messagereply-form form label,
+.comments .reply-form form label,
+.comments .messagereply-form form label {
+  display: none;
+}
+.messages .reply-form form textarea,
+.messages .messagereply-form form textarea,
+.comments .reply-form form textarea,
+.comments .messagereply-form form textarea {
+  height: 80px;
+  width: 100%;
+  border: 1px solid #32443E;
+  background-color: rgba(0, 0, 0, 0.3333333333);
+}
+.messages .reply-form form textarea:focus,
+.messages .messagereply-form form textarea:focus,
+.comments .reply-form form textarea:focus,
+.comments .messagereply-form form textarea:focus {
+  border-color: #3F8577;
+  outline: none;
+}
+.messages .reply-form form button.reply-link,
+.messages .messagereply-form form button.reply-link,
+.comments .reply-form form button.reply-link,
+.comments .messagereply-form form button.reply-link {
+  background-color: transparent;
+}
+.messages .reply-form.active button.reply,
+.messages .messagereply-form.active button.reply,
+.comments .reply-form.active button.reply,
+.comments .messagereply-form.active button.reply {
+  display: none;
+}
+.messages .reply-form.active form,
+.messages .messagereply-form.active form,
+.comments .reply-form.active form,
+.comments .messagereply-form.active form {
   display: block;
 }
-.messages.purple .message {
-  border-color: #78557c;
-  background-color: rgba(191, 39, 199, 0.1333333333);
+.messages .reply-form h3,
+.messages .messagereply-form h3,
+.comments .reply-form h3,
+.comments .messagereply-form h3 {
+  margin: 0 -10px 8px -10px;
+  padding: 2px 8px;
+  font-weight: normal;
+  font-size: 14px;
+  border-bottom: 1px solid #32443E;
+  border-top: 1px solid #32443E;
 }
-.messages.purple .message .caption {
-  background-color: #412243;
+.messages .reply-form .buttons,
+.messages .messagereply-form .buttons,
+.comments .reply-form .buttons,
+.comments .messagereply-form .buttons {
+  text-align: right;
+}
+.messages .messagereply-form form,
+.comments .messagereply-form form {
+  display: block;
+}
+.messages.purple .message,
+.messages.purple .messagereply-form,
+.comments.purple .message,
+.comments.purple .messagereply-form {
+  filter: hue-rotate(138deg);
+}
+.messages.orange .comment,
+.comments.orange .comment {
+  filter: hue-rotate(233deg);
 }
 
 form .mb-3 {
@@ -1150,13 +1318,6 @@ form.wide .form-label {
   margin: 10px 0;
 }
 
-.reply-form {
-  margin: 20px;
-}
-.reply-form.d-none {
-  display: none;
-}
-
 footer {
   margin: 20px 0 150px 0;
 }
@@ -1186,18 +1347,18 @@ footer {
 
 .adminpanel {
   border: 1px solid #441616;
-  background-color: black;
+  background: linear-gradient(0, #200c0c 0%, #000000 50%);
   border-radius: 4px;
   overflow: hidden;
   margin-top: 10px;
 }
 .adminpanel h4 {
   margin: 0;
-  background-color: #441616;
+  background: linear-gradient(0, #5e1b16 0%, #29060e 100%);
   font-size: 16px;
   font-weight: normal;
   padding: 4px 10px;
-  color: #dc7f66;
+  color: #dc7066;
 }
 .adminpanel menu {
   padding: 10px;

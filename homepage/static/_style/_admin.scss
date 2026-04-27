@@ -1,17 +1,17 @@
 .adminpanel{
   border: 1px solid $red-darker;
-  background-color: black;
+  background: linear-gradient(0, #200c0c 0%, #000000 50%);
   border-radius: 4px;
   overflow: hidden;
   margin-top: 10px;
 
   h4{
     margin: 0;
-    background-color: $red-darker;
+    background: linear-gradient(0, #5e1b16 0%, #29060e 100%);
     font-size: 16px;
     font-weight: normal;
     padding: 4px 10px;
-    color: $orange;
+    color: #dc7066;
   }
 
   menu{

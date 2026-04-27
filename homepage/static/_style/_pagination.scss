@@ -1,0 +1,34 @@
+ul.pagination{
+  list-style: none;
+  margin: 10px 0;
+  padding: 0;
+  display: flex;
+
+  li{
+    padding: 0;
+    margin: 0;
+
+    &.active{
+      span.page-link{
+        border: 1px solid $border-hover-color;
+        color: $link-hover-color;
+        background-color: #172828;
+        box-shadow: 0 0 6px $border-hover-color;
+      }
+    }
+  }
+
+  span.page-link,
+  a.page-link{
+    font-size: 12px;
+    display: inline-block;
+    padding: 2px 4px;
+    min-width: 24px;
+    text-align: center;
+    border: 1px solid $border-color;
+    background-color: transparent;
+    border-radius: 3px;
+    margin: 2px;
+    color:$nav-link-color;
+  }
+}

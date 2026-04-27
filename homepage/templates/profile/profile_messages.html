@@ -40,11 +40,9 @@
         </div>
         <p>{{ message.text|render_markdown }}</p>
         {% if user.is_authenticated and perms.homepage.add_message %}
-        <a href="#" class="reply-link" data-message-id="{{ message.id }}">
-            Reply
-        </a>
 
-        <div id="reply-form-{{ message.id }}" class="reply-form d-none mt-2">
+        <div class="reply-form">
+            <button class="reply small toggle-parent" data-target=".reply-form">Reply</button>
             <form method="post" action="{% url 'create_message' profile.id %}">
                 {% csrf_token %}
                 {{ message_form|crispy }}
@@ -52,27 +50,26 @@
                 <input type="hidden" name="reply_to" value="{{ message.id }}">
                 <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                <button type="submit" class="btn btn-sm btn-primary mt-1">
-                    Post reply
-                </button>
+                <div class="buttons">
+                    <button type="submit" class="btn-primary">Post reply</button>
+                    <button type="button" class="toggle-parent" data-target=".reply-form">Cancel</button>
+                </div>
+
             </form>
         </div>
         {% endif %}
         </div>
 
-        {% for reply in message.thread_replies %}
-        <div class="bg-light border border-dark rounded p-1 mx-5 my-2 ms-5">
-            <div>
-                <strong>{{ reply.sender.display_name }}</strong>
-                replied on {{ reply.create_date|date:"F j, o" }}:
+        {% for message in message.thread_replies %}
+        <div class="message reply">
+            <div class="caption">
+                <a href="{% url 'view_profile' message.sender.pk %}">{{ message.sender.display_name }}</a>>
+                replied on {{ message.create_date|date:"F j, o" }}:
             </div>
-            <p>{{ reply.text|render_markdown }}</p>
+            <p>{{ message.text|render_markdown }}</p>
             {% if user.is_authenticated and perms.homepage.add_message %}
-            <a href="#" class="reply-link" data-message-id="{{ reply.id }}">
-                Reply
-            </a>
-
-            <div id="reply-form-{{ reply.id }}" class="reply-form d-none mt-2">
+            <div class="reply-form">
+                <button class="toggle-parent reply small" data-target=".reply-form">Reply</button>
                 <form method="post" action="{% url 'create_message' profile.id %}">
                     {% csrf_token %}
                     {{ message_form|crispy }}
@@ -80,36 +77,39 @@
                     <input type="hidden" name="reply_to" value="{{ reply.id }}">
                     <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                    <button type="submit" class="button btn-primary">
-                        Post reply
-                    </button>
+
+                    <div class="buttons">
+                        <button type="submit" class="btn-primary">Post reply</button>
+                        <button type="button" class="toggle-parent" data-target=".reply-form">Cancel</button>
+                    </div>
+
                 </form>
             </div>
             {% endif %}
         </div>
         {% endfor %}
     {% empty %}
-        Nothing here
+        <p>Nothing here</p>
     {% endfor %}
 
-    {% if profile.enable_shoutwall and perms.homepage.add_message %}
-        <hr>
+    {% if profile.enable_shoutwall and user.is_authenticated and perms.homepage.add_message %}
+    <div class="messagereply-form">
+        <h3>Post a message to {{profile.display_name}}</h3>
 
-        <div class="mx-4 my-3">
-            <h5>Post a message</h5>
+        <form method="post" action="{% url 'create_message' profile.id %}">
+            {% csrf_token %}
+            {{ message_form|crispy }}
 
-            <form method="post" action="{% url 'create_message' profile.id %}">
-                {% csrf_token %}
-                {{ message_form|crispy }}
+            <!-- empty reply_to = top-level message -->
+            <input type="hidden" name="profile_id" value="{{ profile.id }}">
 
-                <!-- empty reply_to = top-level message -->
-                <input type="hidden" name="profile_id" value="{{ profile.id }}">
-
-                <button type="submit" class="button btn-primary">
+            <div class="buttons">
+                <button type="submit" class="btn-primary">
                     Post message
                 </button>
-            </form>
-        </div>
+            </div>
+        </form>
+    </div>
     {% endif %}
 
 </div>

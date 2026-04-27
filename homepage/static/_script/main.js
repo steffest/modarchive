@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let playerElement = document.getElementById("player");
 
     const closeActiveDropdownMenus = () => {
-        let menus = document.querySelectorAll(".dropdown menu.active");
+        let menus = document.querySelectorAll(".dropdown.active");
         menus.forEach(menu => {
             menu.classList.remove("active");
         });
@@ -16,9 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // detect out-of-menu clicks.
         let inMenu = e.target.closest(".dropdown");
-        if (!inMenu){
-            closeActiveDropdownMenus();
-        }
+        if (!inMenu) closeActiveDropdownMenus();
 
         if (e.target.classList.contains("scriptEnabled")) {
             e.preventDefault();
@@ -41,17 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         }else{
-
-            if (e.target.classList.contains("toggle-menu")) {
-                let dropdown = e.target.closest(".dropdown");
-                if (dropdown){
-                    let menu = dropdown.querySelector("menu");
-                    if (menu){
-                        e.preventDefault();
-                        e.stopPropagation();
-                        menu.classList.toggle("active");
-                        return;
-                    }
+            if (e.target.classList.contains("toggle-parent")) {
+                let parent = e.target.parentNode;
+                let selector = e.target.getAttribute("data-target");
+                if (selector){parent = e.target.closest(selector)}
+                if (parent){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    parent.classList.toggle("active");
+                    return;
                 }
             }
 

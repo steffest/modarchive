@@ -1,16 +1,16 @@
 {% if profile %}
-<p>
+<div class="subnav right elevated">
     Member since {{ profile.create_date|date:"M d, Y" }}
 
     {% if user.profile and user.profile.id == profile.id %}
-        - <a href="{% url 'update_profile' %}">Update your profile</a>
+        <a class="button" href="{% url 'update_profile' %}">Update your profile</a>
     {% endif %}
 
     {% if profile.website %}
         <br/>
         <a href="{{profile.website}}">Visit Website</a>
     {% endif %}
-</p>
+</div>
 {% endif %}
 
 <ul class="nav tabs">

@@ -11,17 +11,44 @@
 
     {% include "profile/profile_header_and_navigation.html" with profile=profile artist=profile.artist user=user active_tab='favorites' %}
 
-    {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
-
     <div class="tab-panel yellow" id="myTabContent">
-        <ul class='list-group'>
-        <!-- Favorites tab -->
 
-        {% for favorite in object_list %}
-            <li><a href="{% url 'view_song' favorite.song_id %}">{{ favorite.song.get_title }}</a></li>
-        {% empty %}
-            No favorites added
-        {% endfor %}
-        </ul>
+        {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
+
+
+        <!-- Favorites tab -->
+        {% if object_list|length > 0 %}
+            <table class="songs">
+                <thead>
+                <tr>
+                    <th><div class="file">File<span>name</span></div></th>
+                    <th>Title</th>
+                    {% if not hide_artist %}
+                    <th>Author</th>
+                    {% endif %}
+                    <th class="rating">Rating</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for favorite in object_list %}
+                    <tr>
+                        <td>
+                            <div class="file">
+                                <a class="button inline round player scriptEnabled" href="{% url 'player' %}?song_id={{favorite.song.id}}">Play</a>
+                                <a href="{% url 'view_song' favorite.song.id %}"><i class="format {{favorite.song.get_format_display}}">{{favorite.song.get_format_display}}</i> <span class="filename">{{favorite.song.filename}}</span></a>
+                            </div>
+                        </td>
+                        <td><a href="{% url 'view_song' favorite.song.id %}">{{ favorite.song.get_title }}</a></td>
+                        {% if not hide_artist %}
+                        <td>{% include 'song_artists.html' with song=favorite.song %}</td>
+                        {% endif %}
+                        <td class="rating">{{ favorite.song.songstats.average_comment_score|default_if_none:"" }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+        <p>No favorites added</p>
+        {% endif %}
     </div>
 {% endblock %}

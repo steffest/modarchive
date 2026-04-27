@@ -13,10 +13,6 @@
     margin: 0;
     overflow: hidden;
 
-    &.active{
-      display: block;
-    }
-
     li{
       &:last-child a{
         border-bottom: none;
@@ -51,6 +47,12 @@
         color: $nav-link-hover-color;
         cursor: pointer;
       }
+    }
+  }
+
+  &.active{
+    menu{
+      display: block;
     }
   }
 

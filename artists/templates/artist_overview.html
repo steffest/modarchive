@@ -18,10 +18,6 @@
     </div>
 {% endif %}
 
-<div class="alert alert-warning">
-    This artist is not a modarchive user and they do not actively maintain this page. If there concerns about this page, please contact modarchive staff.
-</div>
-
 <h1>{{ artist.name }}</h1>
 
 
@@ -30,9 +26,11 @@
 {% include 'song_table.html' with songs=songs hide_artist=True %}
 
 
-<p>
-    <br/>
-    <a class="button" href="{% url 'artists' %}">Back to artists index</a>
-</p>
+<div class="infobox">
+    <i class="icon info bottom"></i>
+    This artist is not a modarchive user and they do not actively maintain this page. If there concerns about this page, please contact modarchive staff.
+</div>
+
+<a class="button" href="{% url 'artists' %}">Back to artists index</a>
 
 {% endblock %}

@@ -15,19 +15,20 @@
         {% include 'common_elements/paginator.html' with page_obj=page_obj page_range=page_range %}
 
         {% if profile.has_comments %}
-            <div class='mx-5'>
+            <div class="comments orange">
                 {% for comment in object_list %}
-                    <div class="bg-success bg-opacity-25 border border-dark rounded p-1 mx-4 my-2">
-                        <div><strong>Song:</strong> <a href="{% url 'view_song' comment.song.id %}">{{comment.song.get_title}}</a> ({{comment.song.filename}}) {% include 'song_artists.html' with song=comment.song %}</div>
-                        <div><strong>Posted on:</strong> {{comment.create_date|date:"F j, o"}}</div>
-                        <div><strong>Rating:</strong> {{comment.rating}}/10</div>                        
-                        <br>
-                        {{comment.text|render_markdown }}
+                    <div class="comment">
+                        <div class="caption flex">
+                            <div><strong>Song:</strong> <a href="{% url 'view_song' comment.song.id %}">{{comment.song.get_title}}</a> ({{comment.song.filename}}) {% include 'song_artists.html' with song=comment.song %}</div>
+                            <div>Rating: {{comment.rating}}/10</div>
+                        </div>
+                        <p>{{comment.text|render_markdown }}</p>
+                        <div class="footer">Posted on:{{comment.create_date|date:"F j, o"}}</div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            No comments
+        <p>No comments</p>
         {% endif %}
     </div>
 {% endblock %}

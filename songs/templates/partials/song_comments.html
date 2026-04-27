@@ -2,21 +2,20 @@
 {% load filters %}
 
 {% if song.comment_set.all %}
-    <div class="mt-1">
-        <div class="fs-5">Comments</div>
+    <div class="comments">
+        <h2>Comments</h2>
         {% for comment in song.comment_set.all %}
-            <div class="bg-success bg-opacity-25 border border-dark rounded p-1 my-2">
-                <div class="fw-bold">
+            <div class="comment">
+                <div class="caption flex">
                     {% if comment.profile %}
-                        Posted by <a href="{% url 'view_profile' comment.profile.id %}">{{comment.profile.display_name}}</a> on {{comment.create_date|date:"F j, o"}}
+                        <div>Posted by <a href="{% url 'view_profile' comment.profile.id %}">{{comment.profile.display_name}}</a> on {{comment.create_date|date:"F j, o"}}</div>
                     {% else %}
-                        Posted by Anonymous Modarchive User on {{comment.create_date|date:"F j, o"}}
+                        <div>Posted by Anonymous Modarchive User on {{comment.create_date|date:"F j, o"}}</div>
                     {% endif %}
-                    <br>
-                    Rating: {{comment.rating}}/10
+                    <div>Rating: {{comment.rating}}/10</div>
                 </div>
-                <br>
-                {{comment.text|render_markdown }}
+                <p>{{comment.text|render_markdown }}</p>
+
             </div>
         {% endfor %}
     </div>
