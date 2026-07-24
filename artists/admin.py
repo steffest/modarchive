@@ -19,7 +19,7 @@ class ArtistAdminForm(forms.ModelForm):
 class ArtistAdmin(admin.ModelAdmin):
     form = ArtistAdminForm
     list_display = ('pk', 'name')
-    fields = ('name', 'legacy_id', 'profile',)
+    fields = ('name', 'legacy_id', 'profile', 'total_songs', 'total_downloads', 'total_comments', 'average_song_rating')
     autocomplete_fields = ['profile']
     inlines = (ArtistSongInlineForArtist,)
     exclude = ('search_document', 'user', 'key')

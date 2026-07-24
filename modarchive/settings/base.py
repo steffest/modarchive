@@ -45,7 +45,10 @@ INSTALLED_APPS = [
     'django_bootstrap_icons',
     "crispy_forms",
     "crispy_bootstrap5",
-    "rest_framework"
+    "rest_framework",
+    "rest_framework.authtoken",
+    "django_q",
+    "drf_spectacular"
 ]
 
 MIDDLEWARE = [
@@ -166,3 +169,25 @@ MAXIMUM_UPLOAD_FILENAME_LENGTH = 59
 UNSUPPORTED_FORMATS = []
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+Q_CLUSTER = {
+    'name': 'modarchive',
+    'workers': 1,
+    'timeout': 60,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default',
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'ModArchive API',
+    'DESCRIPTION': 'The Mod Archive JSON API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SORT_OPERATION_PARAMETERS': False,
+}

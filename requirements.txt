@@ -13,8 +13,10 @@ dj-database-url==0.5.0
 Django==5.1.6
 django-bootstrap-icons==0.9.0
 django-crispy-forms==1.14.0
+django-q2==1.10.0
 django-ratelimit==4.0.0
-djangorestframework==3.14.0
+djangorestframework==3.17.1
+drf-spectacular==0.30.0
 factory-boy==3.2.1
 Faker==13.15.0
 gunicorn==22.0.0

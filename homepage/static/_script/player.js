@@ -359,7 +359,7 @@ let Player = (()=>{
         if (isLoading) return;
         currentId = id;
 
-        let url = '/api/v1/download/' + id;
+        let url = '/api/v1/songs/' + id + '/download';
         isLoading = true;
 
         fetch(url)

@@ -224,7 +224,7 @@ window.nextSong = (song_id) => {
 
 	// TODO: Change this to retrieve the requested song
 	song_id = song_id || '26849'
-	let url = '/api/v1/download/' + song_id;
+	let url = '/api/v1/songs/' + song_id + '/download';
 
 	isLoading = true
 	fetch(url)

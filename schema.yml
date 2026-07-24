@@ -1,0 +1,1104 @@
+openapi: 3.0.3
+info:
+  title: ModArchive API
+  version: 1.0.0
+  description: The Mod Archive JSON API
+paths:
+  /api/v1/artists/:
+    get:
+      operationId: artists_list
+      description: List artists with optional filtering and ordering
+      parameters:
+      - in: query
+        name: ordering
+        schema:
+          type: string
+          enum:
+          - average_song_rating
+          - id
+          - name
+          - total_comments
+          - total_downloads
+          - total_songs
+          default: name
+        description: Ordering field (ascending, add a '-' in front to sort descending)
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: starts_with
+        schema:
+          type: string
+        description: Filter artists by first character of name (single character)
+      tags:
+      - artists
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedArtistList'
+          description: ''
+  /api/v1/artists/{id}/:
+    get:
+      operationId: artists_retrieve
+      description: Retrieve a specific artist
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist.
+        required: true
+      tags:
+      - artists
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+          description: ''
+  /api/v1/artists/{id}/songs:
+    get:
+      operationId: artists_songs_list
+      description: Retrieve a list of songs by artist
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - artists
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSongListList'
+          description: ''
+  /api/v1/artists/search:
+    get:
+      operationId: artists_search_list
+      description: Search for artists by name, ordered by search relevance
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: name
+        schema:
+          type: string
+        description: Search by artist name
+        required: true
+      tags:
+      - artists
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedArtistList'
+          description: ''
+  /api/v1/genres:
+    get:
+      operationId: genres_list
+      description: Get a list of available genres
+      tags:
+      - genres
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Genre'
+          description: ''
+  /api/v1/songs/:
+    get:
+      operationId: songs_list
+      description: 'Retrieve a list of songs. At least one filter must be provided:
+        starts_with, license, genre or file_format'
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: starts_with
+        schema:
+          type: string
+        description: Filter songs by first character of filename (single character)
+      - in: query
+        name: license
+        schema:
+          type: string
+          enum:
+          - by
+          - by-nc
+          - by-nc-nd
+          - by-nc-sa
+          - by-nd
+          - by-sa
+          - cc0
+          - publicdomain
+        description: Filter by license
+      - in: query
+        name: genre
+        schema:
+          type: string
+          enum:
+          - alternative
+          - ballad
+          - big-band
+          - bluegrass
+          - blues
+          - chillout
+          - chiptune
+          - christmas
+          - classical
+          - comedy
+          - country
+          - demostyle
+          - disco
+          - easy-listening
+          - electronic-ambient
+          - electronic-breakbeat
+          - electronic-dance
+          - electronic-drum-and-bass
+          - electronic-gabber
+          - electronic-general
+          - electronic-hardcore
+          - electronic-house
+          - electronic-idm
+          - electronic-industrial
+          - electronic-jungle
+          - electronic-minimal
+          - electronic-other
+          - electronic-progressive
+          - electronic-rave
+          - electronic-techno
+          - experimental
+          - fantasy
+          - folk
+          - funk
+          - fusion
+          - gothic
+          - grunge
+          - halloween
+          - hip-hop
+          - jazz-acid
+          - jazz-general
+          - jazz-modern
+          - medieval
+          - metal-extreme
+          - metal-general
+          - new-age
+          - one-hour-compo
+          - orchestral
+          - other
+          - piano
+          - pop-general
+          - pop-soft
+          - pop-synth
+          - punk
+          - r-n-b
+          - reggae
+          - religious
+          - rock-general
+          - rock-hard
+          - rock-soft
+          - ska
+          - soul
+          - soundtrack
+          - spiritual
+          - swing
+          - trance-acid
+          - trance-dream
+          - trance-general
+          - trance-goa
+          - trance-hard
+          - trance-progressive
+          - trance-tribal
+          - video-game
+          - vocal-montage
+          - world
+          - world-latin
+        description: Filter by genre
+      - in: query
+        name: file_format
+        schema:
+          type: string
+          enum:
+          - '669'
+          - AHX
+          - AMF
+          - AMS
+          - C67
+          - DBM
+          - DIGI
+          - DMF
+          - DSM
+          - DSYM
+          - DTM
+          - FAR
+          - FMT
+          - GDM
+          - HVL
+          - IMF
+          - IT
+          - J2B
+          - MDL
+          - MED
+          - MO3
+          - MOD
+          - MPTM
+          - MT2
+          - MTM
+          - OKT
+          - PLM
+          - PSM
+          - PTM
+          - S3M
+          - SFX
+          - STM
+          - STP
+          - STX
+          - SymMOD
+          - ULT
+          - UMX
+          - XM
+        description: Filter by format
+      - in: query
+        name: is_featured
+        schema:
+          type: boolean
+        description: Filter by featured status
+      tags:
+      - songs
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSongListList'
+          description: ''
+  /api/v1/songs/{id}/:
+    get:
+      operationId: songs_retrieve
+      description: Retrieve a specific song
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this song.
+        required: true
+      tags:
+      - songs
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SongDetail'
+          description: ''
+  /api/v1/songs/{id}/download:
+    get:
+      operationId: songs_download_retrieve
+      description: Download a song as a zip file
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - songs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                application/zip:
+                  type: string
+                  format: binary
+          description: Zipped song file
+        '404':
+          description: No response body
+  /api/v1/songs/search:
+    get:
+      operationId: songs_search_list
+      description: 'Search for songs with optional filtering. At least one of the
+        following search parameters is required: title, filename, instrument_text,
+        comment_text.'
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: title
+        schema:
+          type: string
+        description: Search in song title
+      - in: query
+        name: filename
+        schema:
+          type: string
+        description: Search in filename
+      - in: query
+        name: instrument_text
+        schema:
+          type: string
+        description: Search in instrument text
+      - in: query
+        name: comment_text
+        schema:
+          type: string
+        description: Search in comment text
+      - in: query
+        name: min_file_size
+        schema:
+          type: integer
+        description: Minimum file size in bytes
+      - in: query
+        name: max_file_size
+        schema:
+          type: integer
+        description: Maximum file size in bytes
+      - in: query
+        name: min_channels
+        schema:
+          type: integer
+        description: Minimum number of channels
+      - in: query
+        name: max_channels
+        schema:
+          type: integer
+        description: Maximum number of channels
+      - in: query
+        name: file_format
+        schema:
+          type: string
+          enum:
+          - '669'
+          - AHX
+          - AMF
+          - AMS
+          - C67
+          - DBM
+          - DIGI
+          - DMF
+          - DSM
+          - DSYM
+          - DTM
+          - FAR
+          - FMT
+          - GDM
+          - HVL
+          - IMF
+          - IT
+          - J2B
+          - MDL
+          - MED
+          - MO3
+          - MOD
+          - MPTM
+          - MT2
+          - MTM
+          - OKT
+          - PLM
+          - PSM
+          - PTM
+          - S3M
+          - SFX
+          - STM
+          - STP
+          - STX
+          - SymMOD
+          - ULT
+          - UMX
+          - XM
+        description: Filter by file format
+      - in: query
+        name: genre
+        schema:
+          type: string
+          enum:
+          - alternative
+          - ballad
+          - big-band
+          - bluegrass
+          - blues
+          - chillout
+          - chiptune
+          - christmas
+          - classical
+          - comedy
+          - country
+          - demostyle
+          - disco
+          - easy-listening
+          - electronic-ambient
+          - electronic-breakbeat
+          - electronic-dance
+          - electronic-drum-and-bass
+          - electronic-gabber
+          - electronic-general
+          - electronic-hardcore
+          - electronic-house
+          - electronic-idm
+          - electronic-industrial
+          - electronic-jungle
+          - electronic-minimal
+          - electronic-other
+          - electronic-progressive
+          - electronic-rave
+          - electronic-techno
+          - experimental
+          - fantasy
+          - folk
+          - funk
+          - fusion
+          - gothic
+          - grunge
+          - halloween
+          - hip-hop
+          - jazz-acid
+          - jazz-general
+          - jazz-modern
+          - medieval
+          - metal-extreme
+          - metal-general
+          - new-age
+          - one-hour-compo
+          - orchestral
+          - other
+          - piano
+          - pop-general
+          - pop-soft
+          - pop-synth
+          - punk
+          - r-n-b
+          - reggae
+          - religious
+          - rock-general
+          - rock-hard
+          - rock-soft
+          - ska
+          - soul
+          - soundtrack
+          - spiritual
+          - swing
+          - trance-acid
+          - trance-dream
+          - trance-general
+          - trance-goa
+          - trance-hard
+          - trance-progressive
+          - trance-tribal
+          - video-game
+          - vocal-montage
+          - world
+          - world-latin
+        description: Filter by genre
+      - in: query
+        name: license
+        schema:
+          type: string
+          enum:
+          - by
+          - by-nc
+          - by-nc-nd
+          - by-nc-sa
+          - by-nd
+          - by-sa
+          - cc0
+          - publicdomain
+        description: Filter by license
+      tags:
+      - songs
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSongListList'
+          description: ''
+components:
+  schemas:
+    Artist:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+        total_songs:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        total_comments:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        total_downloads:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        average_song_rating:
+          type: number
+          format: double
+          nullable: true
+      required:
+      - id
+      - name
+    BlankEnum:
+      enum:
+      - ''
+    FormatEnum:
+      enum:
+      - '669'
+      - AHX
+      - AMF
+      - AMS
+      - C67
+      - DBM
+      - DIGI
+      - DMF
+      - DSM
+      - DSYM
+      - DTM
+      - FAR
+      - FMT
+      - GDM
+      - HVL
+      - IMF
+      - IT
+      - J2B
+      - MED
+      - MDL
+      - MO3
+      - MOD
+      - MPTM
+      - MT2
+      - MTM
+      - OKT
+      - PLM
+      - PSM
+      - PTM
+      - S3M
+      - SFX
+      - STM
+      - STP
+      - STX
+      - SymMOD
+      - ULT
+      - UMX
+      - XM
+      type: string
+      description: |-
+        * `669` - 669: Composer 669 / UNIS 669
+        * `AHX` - AHX: Abyss' Highest eXperience, formerly THX
+        * `AMF` - AMF: ASYLUM / DSMI
+        * `AMS` - AMS: Extreme's Tracker / Velvet Studio
+        * `C67` - C67: CDFM / Composer 670
+        * `DBM` - DBM: Digi Booster Pro
+        * `DIGI` - DIGI: Digi Booster
+        * `DMF` - DMF: X-Tracker
+        * `DSM` - DSM: DSIK
+        * `DSYM` - DSYM: Digital Symphony
+        * `DTM` - DTM: Digital Tracker / Digital Home Studio
+        * `FAR` - FAR: Farandole Composer
+        * `FMT` - FMT: FM Tracker
+        * `GDM` - GDM: BWSB Sound System
+        * `HVL` - HVL: HivelyTracker
+        * `IMF` - IMF: Imago Orpheus
+        * `IT` - IT: Impulse Tracker
+        * `J2B` - J2B: Galaxy Sound System
+        * `MED` - MED: Octamed
+        * `MDL` - MDL: Digitrakker
+        * `MO3` - MO3: Compressed Module
+        * `MOD` - MOD: Protracker, Generic MOD
+        * `MPTM` - MPTM: OpenMPT
+        * `MT2` - MT2: MadTracker 2
+        * `MTM` - MTM: Multi Tracker
+        * `OKT` - OKT: Oktalyzer
+        * `PLM` - PLM: Disorder Tracker 2
+        * `PSM` - PSM: Epic MegaGames MASI
+        * `PTM` - PTM: PolyTracker
+        * `S3M` - S3M: Scream Tracker 3
+        * `SFX` - SFX: SoundFX / MultiMedia Sound
+        * `STM` - STM: Scream Tracker
+        * `STP` - STP: SoundTracker Pro II
+        * `STX` - STX: Scream Tracker Music Interface Kit
+        * `SymMOD` - SymMOD: Symphonie / Symphonie Pro
+        * `ULT` - ULT: UltraTracker
+        * `UMX` - UMX: Unreal Music
+        * `XM` - XM: FastTracker 2
+    Genre:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+      required:
+      - id
+      - text
+    GenreEnum:
+      enum:
+      - electronic-techno
+      - electronic-dance
+      - electronic-ambient
+      - trance-general
+      - electronic-other
+      - electronic-general
+      - electronic-drum-and-bass
+      - electronic-house
+      - electronic-rave
+      - trance-dream
+      - electronic-breakbeat
+      - electronic-industrial
+      - electronic-hardcore
+      - chillout
+      - trance-goa
+      - electronic-jungle
+      - trance-acid
+      - electronic-idm
+      - electronic-progressive
+      - electronic-gabber
+      - electronic-minimal
+      - trance-hard
+      - trance-progressive
+      - trance-tribal
+      - chiptune
+      - demostyle
+      - one-hour-compo
+      - pop-general
+      - pop-synth
+      - pop-soft
+      - rock-general
+      - rock-soft
+      - rock-hard
+      - funk
+      - disco
+      - ballad
+      - easy-listening
+      - video-game
+      - orchestral
+      - classical
+      - piano
+      - fantasy
+      - soundtrack
+      - comedy
+      - medieval
+      - spiritual
+      - religious
+      - experimental
+      - new-age
+      - folk
+      - country
+      - bluegrass
+      - world
+      - world-latin
+      - fusion
+      - vocal-montage
+      - other
+      - alternative
+      - gothic
+      - punk
+      - metal-general
+      - metal-extreme
+      - grunge
+      - jazz-general
+      - jazz-modern
+      - jazz-acid
+      - blues
+      - swing
+      - big-band
+      - hip-hop
+      - reggae
+      - r-n-b
+      - soul
+      - ska
+      - christmas
+      - halloween
+      type: string
+      description: |-
+        * `electronic-techno` - Electronic - Techno
+        * `electronic-dance` - Electronic - Dance
+        * `electronic-ambient` - Electronic - Ambient
+        * `trance-general` - Trance - General
+        * `electronic-other` - Electronic - Other
+        * `electronic-general` - Electronic - General
+        * `electronic-drum-and-bass` - Electronic - Drum & Bass
+        * `electronic-house` - Electronic - House
+        * `electronic-rave` - Electronic - Rave
+        * `trance-dream` - Trance - Dream
+        * `electronic-breakbeat` - Electronic - Breakbeat
+        * `electronic-industrial` - Electronic - Industrial
+        * `electronic-hardcore` - Electronic - Hardcore
+        * `chillout` - Chillout
+        * `trance-goa` - Trance - Goa
+        * `electronic-jungle` - Electronic - Jungle
+        * `trance-acid` - Trance - Acid
+        * `electronic-idm` - Electronic - IDM
+        * `electronic-progressive` - Electronic - Progressive
+        * `electronic-gabber` - Electronic - Gabber
+        * `electronic-minimal` - Electronic - Minimal
+        * `trance-hard` - Trance - Hard
+        * `trance-progressive` - Trance - Progressive
+        * `trance-tribal` - Trance - Tribal
+        * `chiptune` - Chiptune
+        * `demostyle` - Demostyle
+        * `one-hour-compo` - One-Hour Compo
+        * `pop-general` - Pop - General
+        * `pop-synth` - Pop - Synth
+        * `pop-soft` - Pop - Soft
+        * `rock-general` - Rock - General
+        * `rock-soft` - Rock - Soft
+        * `rock-hard` - Rock - Hard
+        * `funk` - Funk
+        * `disco` - Disco
+        * `ballad` - Ballad
+        * `easy-listening` - Easy Listening
+        * `video-game` - Video Game
+        * `orchestral` - Orchestral
+        * `classical` - Classical
+        * `piano` - Piano
+        * `fantasy` - Fantasy
+        * `soundtrack` - Soundtrack
+        * `comedy` - Comedy
+        * `medieval` - Medieval
+        * `spiritual` - Spiritual
+        * `religious` - Religious
+        * `experimental` - Experimental
+        * `new-age` - New Age
+        * `folk` - Folk
+        * `country` - Country
+        * `bluegrass` - Bluegrass
+        * `world` - World
+        * `world-latin` - World - Latin
+        * `fusion` - Fusion
+        * `vocal-montage` - Vocal Montage
+        * `other` - Other
+        * `alternative` - Alternative
+        * `gothic` - Gothic
+        * `punk` - Punk
+        * `metal-general` - Metal - General
+        * `metal-extreme` - Metal - Extreme
+        * `grunge` - Grunge
+        * `jazz-general` - Jazz - General
+        * `jazz-modern` - Jazz - Modern
+        * `jazz-acid` - Jazz - Acid
+        * `blues` - Blues
+        * `swing` - Swing
+        * `big-band` - Big Band
+        * `hip-hop` - Hip-Hop
+        * `reggae` - Reggae
+        * `r-n-b` - R&B
+        * `soul` - Soul
+        * `ska` - Ska
+        * `christmas` - Christmas
+        * `halloween` - Halloween
+    LicenseEnum:
+      enum:
+      - publicdomain
+      - by-nc
+      - by-nc-nd
+      - by-nc-sa
+      - by-nd
+      - by-sa
+      - by
+      - cc0
+      type: string
+      description: |-
+        * `publicdomain` - Public Domain
+        * `by-nc` - Non-commercial
+        * `by-nc-nd` - Non-commercial No Derivatives
+        * `by-nc-sa` - Non-commercial Share Alike
+        * `by-nd` - No Derivatives
+        * `by-sa` - Share Alike
+        * `by` - Attribution
+        * `cc0` - CC0
+    LimitedArtist:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+      required:
+      - id
+      - name
+    NullEnum:
+      enum:
+      - null
+    PaginatedArtistList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artist'
+    PaginatedSongListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SongList'
+    SongDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 120
+        title_from_file:
+          type: string
+          maxLength: 120
+        filename:
+          type: string
+          maxLength: 120
+        file_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        channels:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        format:
+          $ref: '#/components/schemas/FormatEnum'
+        instrument_text:
+          type: string
+          nullable: true
+          maxLength: 64000
+        comment_text:
+          type: string
+          nullable: true
+          maxLength: 64000
+        license:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/LicenseEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        genre:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/GenreEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_featured:
+          type: boolean
+          nullable: true
+        featured_date:
+          type: string
+          format: date-time
+          nullable: true
+        stats:
+          allOf:
+          - $ref: '#/components/schemas/SongStats'
+          readOnly: true
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/LimitedArtist'
+          readOnly: true
+      required:
+      - artists
+      - channels
+      - file_size
+      - filename
+      - format
+      - id
+      - stats
+      - title
+    SongList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 120
+        title_from_file:
+          type: string
+          maxLength: 120
+        filename:
+          type: string
+          maxLength: 120
+        file_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        channels:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        format:
+          $ref: '#/components/schemas/FormatEnum'
+        license:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/LicenseEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        genre:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/GenreEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_featured:
+          type: boolean
+          nullable: true
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/LimitedArtist'
+          readOnly: true
+      required:
+      - artists
+      - channels
+      - file_size
+      - filename
+      - format
+      - id
+      - title
+    SongStats:
+      type: object
+      properties:
+        downloads:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        total_comments:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        average_comment_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,1})?$
+          nullable: true
+        total_favorites:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from rest_framework.authtoken.admin import TokenAdmin
 
 from . import models
 
@@ -35,3 +36,5 @@ class NewsAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.profile = request.user.profile
         super().save_model(request, obj, form, change)
+
+TokenAdmin.autocomplete_fields = ['user']
